@@ -1,0 +1,12 @@
+language: java
+
+os: linux
+dist: xenial
+jdk:
+    - oraclejdk8
+    - oraclejdk9
+    - oraclejdk10
+    - oraclejdk11
+
+script:
+    - ./gradlew build --scan -s
