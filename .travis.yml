@@ -5,8 +5,7 @@ dist: xenial
 jdk:
     - openjdk8
     - oraclejdk9
-    - oraclejdk10
     - oraclejdk11
 
 script:
-    - ./gradlew build --scan -s
+    - ./gradlew build --stacktrace
