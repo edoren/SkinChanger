@@ -1,4 +1,4 @@
-# SkinChanger Mod
+# SkinChanger Mod [![Build Status](https://travis-ci.org/edoren/SkinChanger.svg?branch=master)](https://travis-ci.org/edoren/SkinChanger)
 
 ## Description
 This mod allows you to change your Minecraft server skin on the fly even if it is in offline mode.
