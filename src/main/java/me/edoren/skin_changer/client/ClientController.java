@@ -38,18 +38,7 @@ public class ClientController {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void initialize() {
-        Path pathToConfig = Paths.get(".", "config", "skin_changer.json");
-        pathToConfig.toFile().getParentFile().mkdirs();
-        if (!pathToConfig.toFile().exists()) {
-            try (Writer w = Files.newBufferedWriter(pathToConfig, StandardCharsets.UTF_8)) {
-
-            } catch (Throwable t) {
-                LogManager.getLogger().error("Failed to write default config file", t);
-            }
-        }
-
         MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
-        // MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogout);
     }
 
     public ResourceLocation getLocationCape(GameProfile profile) {
@@ -107,10 +96,6 @@ public class ClientController {
             }
         }
     }
-
-    // private void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-    //     SkinLoaderService.GetInstance().clear();
-    // }
 
     private ResourceLocation generateRandomLocation() {
         return new ResourceLocation("skin_changer", String.format("textures/generated/%s", UUID.randomUUID().toString()));
