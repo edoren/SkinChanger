@@ -74,20 +74,20 @@ public class ImageUtils {
     }
 
     private static void setAreaOpaque(NativeImage image, int x, int y, int width, int height) {
-        for (int i = x; i < width; ++i)
-            for (int j = y; j < height; ++j)
-                image.setPixelRGBA(i, j, image.getPixelRGBA(i, j) | -16777216);
+        for (int i = x; i < width; i++)
+            for (int j = y; j < height; j++)
+                image.setPixelRGBA(i, j, image.getPixelRGBA(i, j) | 0xFF000000);
     }
 
     private static void setAreaTransparent(NativeImage image, int x, int y, int width, int height) {
-        for (int i = x; i < width; ++i)
-            for (int j = y; j < height; ++j)
-                if ((image.getPixelRGBA(i, j) >> 24 & 255) < 128)
+        for (int i = x; i < width; i++)
+            for (int j = y; j < height; j++)
+                if ((image.getPixelRGBA(i, j) >> 24 & 0xFF) < 128)
                     return;
 
-        for (int l = x; l < width; ++l)
-            for (int i1 = y; i1 < height; ++i1)
-                image.setPixelRGBA(l, i1, image.getPixelRGBA(l, i1) & 16777215);
+        for (int l = x; l < width; l++)
+            for (int i1 = y; i1 < height; i1++)
+                image.setPixelRGBA(l, i1, image.getPixelRGBA(l, i1) & 0xFFFFFF);
     }
 
     public static boolean isNotValidData(byte[] data) {
@@ -98,5 +98,4 @@ public class ImageUtils {
             return true;
         }
     }
-
 }

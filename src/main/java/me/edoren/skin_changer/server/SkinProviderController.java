@@ -64,34 +64,34 @@ public class SkinProviderController {
         skinProviders.add(provider);
     }
 
-    public boolean setPlayerSkin(GameProfile profile, String playerName) {
+    public boolean setPlayerSkin(GameProfile profile, String playerName, boolean cache) {
         for (ISkinProvider provider : skinProviders) {
             byte[] skin = provider.getSkin(playerName);
             if (skin != null) {
-                return storePlayerSkin(profile, skin);
+                return storePlayerSkin(profile, skin, cache);
             }
         }
         return false;
     }
 
-    public boolean setPlayerSkin(GameProfile profile, URL url) {
+    public boolean setPlayerSkin(GameProfile profile, URL url, boolean cache) {
         byte[] skin = NetworkUtils.downloadFile(url.toString(), null, 2);
-        return storePlayerSkin(profile, skin);
+        return storePlayerSkin(profile, skin, cache);
     }
 
-    public boolean setPlayerCape(GameProfile profile, String playerName) {
+    public boolean setPlayerCape(GameProfile profile, String playerName, boolean cache) {
         for (ISkinProvider provider : capeProviders) {
             byte[] cape = provider.getSkin(playerName);
             if (cape != null) {
-                return storePlayerCape(profile, cape);
+                return storePlayerCape(profile, cape, cache);
             }
         }
         return false;
     }
 
-    public boolean setPlayerCape(GameProfile profile, URL url) {
+    public boolean setPlayerCape(GameProfile profile, URL url, boolean cache) {
         byte[] cape = NetworkUtils.downloadFile(url.toString(), null, 2);
-        return storePlayerCape(profile, cape);
+        return storePlayerCape(profile, cape, cache);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -120,22 +120,26 @@ public class SkinProviderController {
         }
     }
 
-    private boolean storePlayerSkin(GameProfile profile, byte[] data) {
+    private boolean storePlayerSkin(GameProfile profile, byte[] data, boolean cache) {
         if (data == null) return false;
         UUID key = profile.getId();
         loadedSkins.put(key, data);
         LogManager.getLogger().info("Loaded skin for player {} with id {}", profile.getName(), key);
-        saveBytesToFile(Paths.get(skinsFolder, key.toString()), data);
+        if (cache) {
+            saveBytesToFile(Paths.get(skinsFolder, key.toString()), data);
+        }
         sendPlayerData(key);
         return true;
     }
 
-    private boolean storePlayerCape(GameProfile profile, byte[] data) {
+    private boolean storePlayerCape(GameProfile profile, byte[] data, boolean cache) {
         if (data == null) return false;
         UUID key = profile.getId();
         loadedCapes.put(key, data);
         LogManager.getLogger().info("Loaded cape for player {} with id {}", profile.getName(), key);
-        saveBytesToFile(Paths.get(capesFolder, key.toString()), data);
+        if (cache) {
+            saveBytesToFile(Paths.get(capesFolder, key.toString()), data);
+        }
         sendPlayerData(key);
         return true;
     }

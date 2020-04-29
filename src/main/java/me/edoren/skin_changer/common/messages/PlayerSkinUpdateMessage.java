@@ -33,15 +33,16 @@ public class PlayerSkinUpdateMessage {
      * Used to read the ByteBuf contents into your member variables
      */
     public static PlayerSkinUpdateMessage decode(PacketBuffer buf) {
-        PlayerSkinUpdateMessage retval = new PlayerSkinUpdateMessage();
+        PlayerSkinUpdateMessage ret = new PlayerSkinUpdateMessage();
         try {
             int size = buf.readInt();
-            retval.playerSkinData = new Vector<>();
-            retval.playerSkinData.ensureCapacity(size);
+            ret.playerSkinData = new Vector<>();
+            ret.playerSkinData.ensureCapacity(size);
             for (int i = 0; i != size; i++) {
                 int bufferSize;
 
-                String uuid = buf.readString();
+                bufferSize = buf.readInt();
+                String uuid = buf.readString(bufferSize);
 
                 byte[] skin = null;
                 bufferSize = buf.readInt();
@@ -57,22 +58,16 @@ public class PlayerSkinUpdateMessage {
                     buf.readBytes(cape);
                 }
 
-                retval.playerSkinData.add(new PlayerSkinData(uuid, skin, cape));
+                ret.playerSkinData.add(new PlayerSkinData(uuid, skin, cape));
             }
-
-            // these methods may also be of use for your code:
-            // for Itemstacks - ByteBufUtils.readItemStack()
-            // for NBT tags ByteBufUtils.readTag();
-            // for Strings: ByteBufUtils.readUTF8String();
-            // NB that PacketBuffer is a derived class of ByteBuf
-
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage: " + e);
+            ret.messageIsValid = false;
             e.printStackTrace();
-            return retval;
+            return ret;
         }
-        retval.messageIsValid = true;
-        return retval;
+        ret.messageIsValid = true;
+        return ret;
     }
 
     /**
@@ -87,6 +82,7 @@ public class PlayerSkinUpdateMessage {
 
             PlayerSkinData player = playerSkinData.get(i);
 
+            buf.writeInt(player.getUUID().length());
             buf.writeString(player.getUUID());
 
             bufferSize = player.getSkin() != null ? player.getSkin().length : 0;
@@ -99,10 +95,5 @@ public class PlayerSkinUpdateMessage {
             if (bufferSize > 0)
                 buf.writeBytes(player.getCape());
         }
-    }
-
-    @Override
-    public String toString() {
-        return "TargetEffectMessageToClient[targetCoordinates=" + playerSkinData + "]";
     }
 }

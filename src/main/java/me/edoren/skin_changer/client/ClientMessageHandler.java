@@ -9,13 +9,12 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 import java.util.Vector;
 import java.util.function.Supplier;
 
-public class MessageHandler {
+public class ClientMessageHandler {
 
     /**
      * Called when a message is received of the appropriate type.
@@ -27,12 +26,12 @@ public class MessageHandler {
         ctx.setPacketHandled(true);
 
         if (sideReceived != LogicalSide.CLIENT) {
-            LOGGER.warn("PlayerSkinUpdateMessage received on wrong side:" + ctx.getDirection().getReceptionSide());
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage received on wrong side:" + ctx.getDirection().getReceptionSide());
             return;
         }
 
         if (!message.isMessageValid()) {
-            LOGGER.warn("PlayerSkinUpdateMessage was invalid" + message.toString());
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage was invalid" + message.toString());
             return;
         }
 
@@ -40,7 +39,7 @@ public class MessageHandler {
         // that the ctx handler is a client, and that Minecraft exists.
         Optional<ClientWorld> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(sideReceived);
         if (!clientWorld.isPresent()) {
-            LOGGER.warn("PlayerSkinUpdateMessage context could not provide a ClientWorld.");
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage context could not provide a ClientWorld.");
             return;
         }
 
@@ -65,6 +64,4 @@ public class MessageHandler {
     public static boolean isThisProtocolAcceptedByClient(String protocolVersion) {
         return NetworkContext.MESSAGE_PROTOCOL_VERSION.equals(protocolVersion);
     }
-
-    private static final Logger LOGGER = LogManager.getLogger();
 }

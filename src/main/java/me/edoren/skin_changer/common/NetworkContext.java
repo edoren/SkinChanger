@@ -1,7 +1,9 @@
 package me.edoren.skin_changer.common;
 
-import me.edoren.skin_changer.client.MessageHandler;
+import me.edoren.skin_changer.client.ClientMessageHandler;
+import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
+import me.edoren.skin_changer.server.ServerMessageHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -13,6 +15,7 @@ public class NetworkContext {
     public static final ResourceLocation simpleChannelRL = new ResourceLocation("skin_changer", "mbechannel");
 
     public static final byte PLAYER_SKIN_UPDATE_MESSAGE_ID = 97;
+    public static final byte PLAYER_SKIN_REQUEST_MESSAGE_ID = 98;
 
     SimpleChannel simpleChannel;
 
@@ -28,12 +31,16 @@ public class NetworkContext {
 
     public void initialize() {
         simpleChannel = NetworkRegistry.newSimpleChannel(simpleChannelRL, () -> MESSAGE_PROTOCOL_VERSION,
-                me.edoren.skin_changer.client.MessageHandler::isThisProtocolAcceptedByClient,
-                me.edoren.skin_changer.server.MessageHandler::isThisProtocolAcceptedByServer);
+                ClientMessageHandler::isThisProtocolAcceptedByClient,
+                ServerMessageHandler::isThisProtocolAcceptedByServer);
 
         simpleChannel.registerMessage(PLAYER_SKIN_UPDATE_MESSAGE_ID, PlayerSkinUpdateMessage.class,
                 PlayerSkinUpdateMessage::encode, PlayerSkinUpdateMessage::decode,
-                MessageHandler::onMessageReceived);
+                ClientMessageHandler::onMessageReceived);
+
+        simpleChannel.registerMessage(PLAYER_SKIN_REQUEST_MESSAGE_ID, PlayerSkinRequestMessage.class,
+                PlayerSkinRequestMessage::encode, PlayerSkinRequestMessage::decode,
+                ServerMessageHandler::onMessageReceived);
     }
 
     public SimpleChannel getSimpleChannel() {

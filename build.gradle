@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.1-beta.1'
+version = '0.1-beta.2'
 group = 'me.edoren.skin_changer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'skin_changer'
 
