@@ -78,6 +78,9 @@ public class SkinLoaderService {
 
     public void requestPlayerSkin(GameProfile profile) {
         if (loadedSkins.containsKey(profile.getId()) || playerSkinRequests.containsKey(profile.getId())) return;
+
+        LogManager.getLogger().info("Requesting skin for player {} with id {}", profile.getName(), profile.getId());
+
         Object signal = new Object();
         playerSkinRequests.put(profile.getId(), signal);
         SharedPool.execute(() -> {

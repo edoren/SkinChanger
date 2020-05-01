@@ -45,10 +45,10 @@ public class ClientMessageHandler {
 
         // This code creates a new task which will be executed by the client during the next tick
         // In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
-        ctx.enqueueWork(() -> processMessage(clientWorld.get(), message));
+        ctx.enqueueWork(() -> processMessage(message));
     }
 
-    private static void processMessage(ClientWorld worldClient, PlayerSkinUpdateMessage message) {
+    private static void processMessage(PlayerSkinUpdateMessage message) {
         Vector<PlayerSkinData> skinData = message.getAllSkinData();
         if (skinData.isEmpty()) {
             SkinLoaderService.GetInstance().clear();

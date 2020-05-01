@@ -30,25 +30,28 @@ public class ServerMessageHandler {
             LogManager.getLogger().warn("PlayerSkinRequestMessage was invalid" + message.toString());
             return;
         }
-        
+
         // we know for sure that this handler is only used on the server side, so it is ok to assume
         //  that the ctx handler is a serverhandler, and that ServerPlayerEntity exists
         // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
-        // final ServerPlayerEntity sendingPlayer = ctx.getSender();
-        // if (sendingPlayer == null) {
-        //     LogManager.getLogger().warn("EntityPlayer was null when PlayerSkinRequestMessage was received");
-        // }
+        final ServerPlayerEntity sendingPlayer = ctx.getSender();
+        if (sendingPlayer == null) {
+            LogManager.getLogger().warn("EntityPlayer was null when PlayerSkinRequestMessage was received");
+        }
 
         // This code creates a new task which will be executed by the server during the next tick,
         //  In this case, the task is to call messageHandlerOnServer.processMessage(message, sendingPlayer)
-        ctx.enqueueWork(() -> processMessage(message));
+        ctx.enqueueWork(() -> processMessage(message, sendingPlayer));
     }
 
-    static void processMessage(PlayerSkinRequestMessage message) {
+    static void processMessage(PlayerSkinRequestMessage message, ServerPlayerEntity sendingPlayer) {
         SharedPool.execute(() -> {
-            GameProfile gameProfile = new GameProfile(message.getPlayerUUID(), message.getPlayerName());
-            SkinProviderController.GetInstance().setPlayerSkin(gameProfile, message.getPlayerName(), false);
+            GameProfile profile = new GameProfile(message.getPlayerUUID(), message.getPlayerName());
+            LogManager.getLogger().info("Requested skin for player {} with id {}", profile.getName(), profile.getId());
+            if (!SkinProviderController.GetInstance().getPlayerSkin(profile, sendingPlayer)) {
+                SkinProviderController.GetInstance().setPlayerSkinByName(profile, message.getPlayerName(), false);
+            }
         });
     }
 

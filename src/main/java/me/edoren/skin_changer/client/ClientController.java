@@ -30,15 +30,14 @@ public class ClientController {
     private ClientController() {
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void initialize() {
         MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
     }
 
     public ResourceLocation getLocationCape(GameProfile profile) {
-        ISkin skin = SkinLoaderService.GetInstance().getCape(profile);
-        if (skin != null && skin.isDataReady())
-            return getOrCreateTexture(skin.getData(), skin).getLocation();
+        ISkin cape = SkinLoaderService.GetInstance().getCape(profile);
+        if (cape != null && cape.isDataReady())
+            return getOrCreateTexture(cape.getData(), cape).getLocation();
         return null;
     }
 
@@ -85,7 +84,7 @@ public class ClientController {
             if (world != null) {
                 for (PlayerEntity player : world.getPlayers()) {
                     SkinLoaderService.GetInstance().getSkin(player.getGameProfile());
-                    // SkinProviderController.GetInstance().getCape(player.getGameProfile());
+                    SkinLoaderService.GetInstance().getCape(player.getGameProfile());
                 }
             }
         }

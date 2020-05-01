@@ -47,8 +47,8 @@ public class NetworkUtils {
             try {
                 HttpURLConnection urlConnection = (HttpURLConnection) (proxy == null ? url.openConnection() : url.openConnection(proxy));
                 urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
-                urlConnection.setReadTimeout(30000);
-                urlConnection.setConnectTimeout(30000);
+                urlConnection.setReadTimeout(5000);
+                urlConnection.setConnectTimeout(5000);
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
