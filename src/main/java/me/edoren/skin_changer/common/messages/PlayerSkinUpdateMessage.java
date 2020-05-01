@@ -1,21 +1,22 @@
 package me.edoren.skin_changer.common.messages;
 
-import me.edoren.skin_changer.common.models.PlayerSkinData;
+import me.edoren.skin_changer.common.models.PlayerModel;
+import me.edoren.skin_changer.common.models.PlayerSkinModel;
 import net.minecraft.network.PacketBuffer;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Vector;
 
 public class PlayerSkinUpdateMessage {
-    private Vector<PlayerSkinData> playerSkinData;
+    private Vector<PlayerSkinModel> playerSkinData;
     private boolean messageIsValid;
 
-    public PlayerSkinUpdateMessage(Vector<PlayerSkinData> playerSkinData) {
+    public PlayerSkinUpdateMessage(Vector<PlayerSkinModel> playerSkinData) {
         this.playerSkinData = playerSkinData;
         this.messageIsValid = true;
     }
 
-    public Vector<PlayerSkinData> getAllSkinData() {
+    public Vector<PlayerSkinModel> getAllSkinData() {
         return playerSkinData;
     }
 
@@ -42,6 +43,9 @@ public class PlayerSkinUpdateMessage {
                 int bufferSize;
 
                 bufferSize = buf.readInt();
+                String name = buf.readString(bufferSize);
+
+                bufferSize = buf.readInt();
                 String uuid = buf.readString(bufferSize);
 
                 byte[] skin = null;
@@ -58,7 +62,7 @@ public class PlayerSkinUpdateMessage {
                     buf.readBytes(cape);
                 }
 
-                ret.playerSkinData.add(new PlayerSkinData(uuid, skin, cape));
+                ret.playerSkinData.add(new PlayerSkinModel(new PlayerModel(name, uuid), skin, cape));
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage: " + e);
@@ -80,10 +84,13 @@ public class PlayerSkinUpdateMessage {
         for (int i = 0; i != playerSkinData.size(); i++) {
             int bufferSize;
 
-            PlayerSkinData player = playerSkinData.get(i);
+            PlayerSkinModel player = playerSkinData.get(i);
 
-            buf.writeInt(player.getUUID().length());
-            buf.writeString(player.getUUID());
+            buf.writeInt(player.getPlayer().getName().length());
+            buf.writeString(player.getPlayer().getName());
+
+            buf.writeInt(player.getPlayer().getId().length());
+            buf.writeString(player.getPlayer().getId());
 
             bufferSize = player.getSkin() != null ? player.getSkin().length : 0;
             buf.writeInt(bufferSize);

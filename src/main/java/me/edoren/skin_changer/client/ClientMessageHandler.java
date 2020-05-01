@@ -3,7 +3,7 @@ package me.edoren.skin_changer.client;
 import me.edoren.skin_changer.client.api.SkinLoaderService;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
-import me.edoren.skin_changer.common.models.PlayerSkinData;
+import me.edoren.skin_changer.common.models.PlayerSkinModel;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
@@ -49,15 +49,15 @@ public class ClientMessageHandler {
     }
 
     private static void processMessage(PlayerSkinUpdateMessage message) {
-        Vector<PlayerSkinData> skinData = message.getAllSkinData();
+        Vector<PlayerSkinModel> skinData = message.getAllSkinData();
         if (skinData.isEmpty()) {
             SkinLoaderService.GetInstance().clear();
             return;
         }
 
-        for (PlayerSkinData playerData : skinData) {
-            SkinLoaderService.GetInstance().loadPlayerSkin(playerData.getUUID(), playerData.getSkin());
-            SkinLoaderService.GetInstance().loadPlayerCape(playerData.getUUID(), playerData.getCape());
+        for (PlayerSkinModel playerData : skinData) {
+            SkinLoaderService.GetInstance().loadPlayerSkin(playerData.getPlayer(), playerData.getSkin());
+            SkinLoaderService.GetInstance().loadPlayerCape(playerData.getPlayer(), playerData.getCape());
         }
     }
 

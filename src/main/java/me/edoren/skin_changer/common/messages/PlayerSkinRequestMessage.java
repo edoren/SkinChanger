@@ -1,32 +1,20 @@
 package me.edoren.skin_changer.common.messages;
 
-import com.mojang.authlib.GameProfile;
+import me.edoren.skin_changer.common.models.PlayerModel;
 import net.minecraft.network.PacketBuffer;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.UUID;
-
 public class PlayerSkinRequestMessage {
-    private String playerName;
-    private UUID playerUUID;
+    private PlayerModel player;
     private boolean messageIsValid;
 
-    public PlayerSkinRequestMessage(GameProfile profile) {
-        this(profile.getName(), profile.getId());
-    }
-
-    public PlayerSkinRequestMessage(String playerName, UUID playerUUID) {
-        this.playerName = playerName;
-        this.playerUUID = playerUUID;
+    public PlayerSkinRequestMessage(PlayerModel player) {
+        this.player = player;
         this.messageIsValid = true;
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public UUID getPlayerUUID() {
-        return playerUUID;
+    public PlayerModel getPlayer() {
+        return player;
     }
 
     public boolean isMessageValid() {
@@ -47,9 +35,10 @@ public class PlayerSkinRequestMessage {
         try {
             int bufferSize;
             bufferSize = buf.readInt();
-            ret.playerName = buf.readString(bufferSize);
+            String name = buf.readString(bufferSize);
             bufferSize = buf.readInt();
-            ret.playerUUID = UUID.fromString(buf.readString(bufferSize));
+            String uuid = buf.readString(bufferSize);
+            ret.player = new PlayerModel(name, uuid);
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage: " + e);
             ret.messageIsValid = false;
@@ -66,9 +55,9 @@ public class PlayerSkinRequestMessage {
      */
     public void encode(PacketBuffer buf) {
         if (!messageIsValid) return;
-        buf.writeInt(playerName.length());
-        buf.writeString(playerName);
-        buf.writeInt(playerUUID.toString().length());
-        buf.writeString(playerUUID.toString());
+        buf.writeInt(player.getName().length());
+        buf.writeString(player.getName());
+        buf.writeInt(player.getId().length());
+        buf.writeString(player.getId());
     }
 }

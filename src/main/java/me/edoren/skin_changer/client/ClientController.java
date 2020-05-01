@@ -1,8 +1,8 @@
 package me.edoren.skin_changer.client;
 
-import com.mojang.authlib.GameProfile;
 import me.edoren.skin_changer.client.api.ISkin;
 import me.edoren.skin_changer.client.api.SkinLoaderService;
+import me.edoren.skin_changer.common.models.PlayerModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -34,24 +34,24 @@ public class ClientController {
         MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
     }
 
-    public ResourceLocation getLocationCape(GameProfile profile) {
-        ISkin cape = SkinLoaderService.GetInstance().getCape(profile);
+    public ResourceLocation getLocationCape(PlayerModel model) {
+        ISkin cape = SkinLoaderService.GetInstance().getCape(model);
         if (cape != null && cape.isDataReady())
             return getOrCreateTexture(cape.getData(), cape).getLocation();
         return null;
     }
 
-    public ResourceLocation getLocationSkin(GameProfile profile) {
-        ISkin skin = SkinLoaderService.GetInstance().getSkin(profile);
+    public ResourceLocation getLocationSkin(PlayerModel model) {
+        ISkin skin = SkinLoaderService.GetInstance().getSkin(model);
         if (skin != null && skin.isDataReady())
             return getOrCreateTexture(skin.getData(), skin).getLocation();
         return null;
     }
 
-    public String getSkinType(GameProfile profile) {
-        ResourceLocation location = getLocationSkin(profile);
+    public String getSkinType(PlayerModel model) {
+        ResourceLocation location = getLocationSkin(model);
         if (location != null) {
-            ISkin skin = SkinLoaderService.GetInstance().getSkin(profile);
+            ISkin skin = SkinLoaderService.GetInstance().getSkin(model);
             if (skin != null && skin.isDataReady())
                 return skin.getSkinType();
         }
@@ -83,8 +83,9 @@ public class ClientController {
             World world = Minecraft.getInstance().world;
             if (world != null) {
                 for (PlayerEntity player : world.getPlayers()) {
-                    SkinLoaderService.GetInstance().getSkin(player.getGameProfile());
-                    SkinLoaderService.GetInstance().getCape(player.getGameProfile());
+                    PlayerModel model = new PlayerModel(player.getGameProfile());
+                    SkinLoaderService.GetInstance().getSkin(model);
+                    SkinLoaderService.GetInstance().getCape(model);
                 }
             }
         }

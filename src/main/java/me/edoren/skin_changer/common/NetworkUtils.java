@@ -62,13 +62,12 @@ public class NetworkUtils {
 
                 LogManager.getLogger().info("File {} downloaded", url);
                 return stream.toByteArray();
-            } catch (FileNotFoundException e) {
-                LogManager.getLogger().info("Error downloading file {} - {}", url, e);
+            } catch (FileNotFoundException ignored) {
                 return null;
-            } catch (IOException e) {
-                LogManager.getLogger().info("Error downloading file {} - {}", url, e);
+            } catch (IOException ignored) {
             }
         }
+        LogManager.getLogger().info("Error downloading file {}", url);
         return null;
     }
 

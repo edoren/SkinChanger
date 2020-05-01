@@ -1,23 +1,22 @@
 package me.edoren.skin_changer.client.api;
 
-import com.mojang.authlib.GameProfile;
 import me.edoren.skin_changer.client.ImageUtils;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.SharedPool;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
+import me.edoren.skin_changer.common.models.PlayerModel;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class SkinLoaderService {
     private static SkinLoaderService singleInstance = null;
 
-    private final Map<UUID, Object> playerSkinRequests = new HashMap<>();
+    private final Map<PlayerModel, Object> playerSkinRequests = new HashMap<>();
 
-    private final Map<UUID, ISkin> loadedSkins = new HashMap<>();
-    private final Map<UUID, ISkin> loadedCapes = new HashMap<>();
+    private final Map<PlayerModel, ISkin> loadedSkins = new HashMap<>();
+    private final Map<PlayerModel, ISkin> loadedCapes = new HashMap<>();
 
     public static SkinLoaderService GetInstance() {
         if (singleInstance == null)
@@ -29,90 +28,82 @@ public class SkinLoaderService {
     private SkinLoaderService() {
     }
 
-    public void loadPlayerSkin(String uuidString, byte[] data) {
-        UUID uuid = UUID.fromString(uuidString);
-
+    public void loadPlayerSkin(PlayerModel model, byte[] data) {
         if (data == null) {
-            loadedSkins.remove(uuid);
+            loadedSkins.remove(model);
             return;
         }
 
-        LogManager.getLogger().info("Loading skin for player {}", uuid);
+        LogManager.getLogger().info("Loading skin for player {}", model);
 
         if (ImageUtils.isNotValidData(data)) {
-            LogManager.getLogger().info("Error loading skin for player {}", uuid);
+            LogManager.getLogger().info("Error loading skin for player {}", model);
             return;
         }
 
         SkinData skin = new SkinData();
         skin.setSkinFilter(ImageUtils::legacyFilter);
         skin.put(data, ImageUtils.judgeSkinType(data));
-        loadedSkins.put(uuid, skin);
+        loadedSkins.put(model, skin);
 
-        if (playerSkinRequests.containsKey(uuid)) {
-            synchronized (playerSkinRequests.get(uuid)) {
-                playerSkinRequests.get(uuid).notify();
+        if (playerSkinRequests.containsKey(model)) {
+            synchronized (playerSkinRequests.get(model)) {
+                playerSkinRequests.get(model).notify();
             }
         }
     }
 
-    public void loadPlayerCape(String uuidString, byte[] data) {
-        UUID uuid = UUID.fromString(uuidString);
-
+    public void loadPlayerCape(PlayerModel model, byte[] data) {
         if (data == null) {
-            loadedCapes.remove(uuid);
+            loadedCapes.remove(model);
             return;
         }
 
-        LogManager.getLogger().info("Loading cape for player {}", uuid);
+        LogManager.getLogger().info("Loading cape for player {}", model);
 
         if (ImageUtils.isNotValidData(data)) {
-            LogManager.getLogger().info("Error loading cape for player {}", uuid);
+            LogManager.getLogger().info("Error loading cape for player {}", model);
             return;
         }
 
         SkinData skin = new SkinData();
         skin.put(data, ImageUtils.judgeSkinType(data));
-        loadedCapes.put(uuid, skin);
+        loadedCapes.put(model, skin);
     }
 
-    public void requestPlayerSkin(GameProfile profile) {
-        if (loadedSkins.containsKey(profile.getId()) || playerSkinRequests.containsKey(profile.getId())) return;
+    public void requestPlayerSkin(PlayerModel model) {
+        if (loadedSkins.containsKey(model) || playerSkinRequests.containsKey(model)) return;
 
-        LogManager.getLogger().info("Requesting skin for player {} with id {}", profile.getName(), profile.getId());
+        LogManager.getLogger().info("Requesting skin for player {} with id {}", model.getName(), model.getId());
 
         Object signal = new Object();
-        playerSkinRequests.put(profile.getId(), signal);
+        playerSkinRequests.put(model, signal);
         SharedPool.execute(() -> {
-            PlayerSkinRequestMessage message = new PlayerSkinRequestMessage(profile);
+            PlayerSkinRequestMessage message = new PlayerSkinRequestMessage(model);
             NetworkContext.GetInstance().getSimpleChannel().sendToServer(message);
             synchronized (signal) {
                 try {
                     signal.wait(5000);
                 } catch (InterruptedException e) {
-                    LogManager.getLogger().info("Error loading skin for player {}", profile.getName());
+                    LogManager.getLogger().info("Error loading skin for player {}", model.getName());
                 }
-                playerSkinRequests.remove(profile.getId());
+                playerSkinRequests.remove(model);
             }
         });
     }
 
-    public ISkin getSkin(GameProfile profile) {
-        if (profile == null || profile.getId() == null) {
+    public ISkin getSkin(PlayerModel model) {
+        if (model == null || model.getId() == null) {
             return null;
         }
-
-        UUID key = profile.getId();
-        return loadedSkins.get(key);
+        return loadedSkins.get(model);
     }
 
-    public ISkin getCape(GameProfile profile) {
-        if (profile == null || profile.getId() == null) {
+    public ISkin getCape(PlayerModel model) {
+        if (model == null || model.getId() == null) {
             return null;
         }
-
-        UUID key = profile.getId();
-        return loadedCapes.get(key);
+        return loadedCapes.get(model);
     }
 
     public void clear() {
