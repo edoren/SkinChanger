@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,7 +46,7 @@ public class SkinProviderController {
 
     private static SkinProviderController singleInstance = null;
 
-    private String usersFile;
+    private String cacheFile;
     private final Map<DataType, List<ISkinProvider>> providers = new HashMap<>();
     private final Map<DataType, Map<PlayerModel, byte[]>> loadedData = new HashMap<>();
     private final Map<DataType, String> cacheFolders = new HashMap<>();
@@ -75,12 +74,12 @@ public class SkinProviderController {
         cacheFolders.put(DataType.SKIN, skinsDir.getPath());
         cacheFolders.put(DataType.CAPE, capesDir.getPath());
 
-        File usersFile = new File(saveFolder, "users.json");
+        File cacheFile = new File(saveFolder, "cache.json");
         try {
-            usersFile.createNewFile();
+            cacheFile.createNewFile();
         } catch (IOException ignored) {
         }
-        this.usersFile = usersFile.getPath();
+        this.cacheFile = cacheFile.getPath();
 
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogout);
@@ -142,16 +141,11 @@ public class SkinProviderController {
         cleanPlayerData(new PlayerModel(profile), DataType.CAPE);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void cleanPlayerData(PlayerModel model, DataType dataType) {
+        deletePlayerDataFromCache(model, dataType);
         if (loadedData.get(dataType).containsKey(model)) {
             loadedData.get(dataType).remove(model);
             sendPlayerDataToAll(model);
-            File capeFile = new File(cacheFolders.get(dataType), model.getId());
-            LogManager.getLogger().info("Removing {} for player {} with id {}", dataType, model.getName(), model.getId());
-            if (capeFile.isFile()) {
-                capeFile.delete();
-            }
         }
     }
 
@@ -161,7 +155,7 @@ public class SkinProviderController {
         if (cache)
             savePlayerDataToCache(dataType, model, data);
         sendPlayerDataToAll(model);
-        LogManager.getLogger().info("Loaded {} for player {} with id {}", dataType, model.getName(), model.getId());
+        LogManager.getLogger().info("Loaded {} for player {}", dataType, model);
         return true;
     }
 
@@ -201,8 +195,25 @@ public class SkinProviderController {
     private void savePlayerDataToCache(DataType dataType, PlayerModel model, final byte[] bytes) {
         SharedPool.execute(() -> {
             try {
-                PlayerModel playerModel = storePlayerModel(model);
-                Path filePath = Paths.get(cacheFolders.get(dataType), playerModel.getId());
+                String fileUUID = model.getId();
+
+                List<PlayerModel> playerModels = readCacheFile();
+
+                // Check if player model is already stored
+                if (playerModels.contains(model)) {
+                    for (PlayerModel playerModel : playerModels) {
+                        if (playerModel.equals(model)) {
+                            fileUUID = playerModel.getId();
+                            break;
+                        }
+                    }
+                } else {
+                    playerModels.add(model);
+                }
+
+                writeCacheFile(playerModels);
+
+                Path filePath = Paths.get(cacheFolders.get(dataType), fileUUID);
                 Files.write(filePath, bytes);
                 LogManager.getLogger().info("Caching file {}", filePath.toString());
             } catch (IOException e) {
@@ -212,62 +223,69 @@ public class SkinProviderController {
     }
 
     private boolean loadPlayerDataFromCache(PlayerModel model, DataType dataType) {
-        LogManager.getLogger().info("LOADING {}", model);
         try {
-            PlayerModel playerModel = loadPlayerModel(model);
-            if (playerModel == null) return false;
-            File file = new File(cacheFolders.get(dataType), playerModel.getId());
-            if (file.isFile()) {
-                byte[] data = Files.readAllBytes(file.toPath());
-                loadedData.get(dataType).put(playerModel, data);
-                LogManager.getLogger().info("Loading local {} for player {} with id {}", dataType, playerModel.getName(), playerModel.getId());
-                return true;
+            List<PlayerModel> playerModels = readCacheFile();
+            for (PlayerModel playerModel : playerModels) {
+                if (playerModel.equals(model)) {
+                    File file = new File(cacheFolders.get(dataType), playerModel.getId());
+                    if (file.isFile()) {
+                        byte[] data = Files.readAllBytes(file.toPath());
+                        loadedData.get(dataType).put(playerModel, data);
+                        LogManager.getLogger().info("Loading local {} for player {}", dataType, playerModel);
+                        return true;
+                    }
+                    break;
+                }
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
-    private PlayerModel storePlayerModel(PlayerModel model) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type playerModelsType = new TypeToken<List<PlayerModel>>() {}.getType();
+    private void deletePlayerDataFromCache(PlayerModel model, DataType dataType) {
+        SharedPool.execute(() -> {
+            try {
+                List<PlayerModel> playerModels = readCacheFile();
+                for (int i = 0; i < playerModels.size(); i++) {
+                    PlayerModel playerModel = playerModels.get(i);
+                    if (model.equals(playerModel)) {
+                        File dataFileSkin = new File(cacheFolders.get(DataType.SKIN), playerModel.getId());
+                        File dataFileCape = new File(cacheFolders.get(DataType.CAPE), playerModel.getId());
 
-        FileReader fr = new FileReader(usersFile);
-        List<PlayerModel> playerModels = gson.fromJson(fr, playerModelsType);
-        fr.close();
+                        File fileToRemove = dataType.equals(DataType.SKIN) ? dataFileSkin : dataFileCape;
 
-        if (playerModels == null) {
-            playerModels = new ArrayList<>();
-        }
+                        if (fileToRemove.isFile() && fileToRemove.delete()) {
+                            LogManager.getLogger().info("Removing {} for player {}", dataType, model);
+                        }
 
-        // Check if player model is already stored
-        for (PlayerModel playerModel : playerModels) {
-            if (playerModel.equals(model)) return playerModel;
-        }
-        playerModels.add(model);
-
-        FileWriter fw = new FileWriter(usersFile);
-        gson.toJson(playerModels, fw);
-        fw.close();
-
-        return model;
+                        if (!dataFileSkin.isFile() && !dataFileSkin.isFile()) {
+                            playerModels.remove(i);
+                            writeCacheFile(playerModels);
+                        }
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private PlayerModel loadPlayerModel(PlayerModel model) throws IOException {
+    private List<PlayerModel> readCacheFile() throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        FileReader fr = new FileReader(usersFile);
+        FileReader fr = new FileReader(cacheFile);
         List<PlayerModel> playerModels = gson.fromJson(fr, new TypeToken<List<PlayerModel>>() {
         }.getType());
         fr.close();
+        return playerModels != null ? playerModels : new ArrayList<>();
+    }
 
-        if (playerModels == null) return null;
-
-        for (PlayerModel playerModel : playerModels) {
-            if (playerModel.equals(model)) return playerModel;
-        }
-
-        return null;
+    private void writeCacheFile(List<PlayerModel> playersCache) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        FileWriter fw = new FileWriter(cacheFile);
+        gson.toJson(playersCache, fw);
+        fw.close();
     }
 
     private void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -289,7 +307,7 @@ public class SkinProviderController {
         GameProfile profile = event.getPlayer().getGameProfile();
         PlayerModel model = new PlayerModel(profile);
         if (loadedData.get(DataType.SKIN).containsKey(model) || loadedData.get(DataType.CAPE).containsKey(model)) {
-            LogManager.getLogger().info("Removing session data for player {} with id {}", profile.getName(), profile.getId());
+            LogManager.getLogger().info("Removing session data for player {}[{}]", profile.getName(), profile.getId());
             loadedData.get(DataType.SKIN).remove(model);
             loadedData.get(DataType.CAPE).remove(model);
             sendPlayerDataToAll(model);

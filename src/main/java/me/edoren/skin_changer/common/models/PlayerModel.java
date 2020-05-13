@@ -1,7 +1,6 @@
 package me.edoren.skin_changer.common.models;
 
 import com.mojang.authlib.GameProfile;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.UUID;
 

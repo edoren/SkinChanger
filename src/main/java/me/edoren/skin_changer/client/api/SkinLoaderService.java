@@ -74,7 +74,7 @@ public class SkinLoaderService {
     public void requestPlayerSkin(PlayerModel model) {
         if (loadedSkins.containsKey(model) || playerSkinRequests.containsKey(model)) return;
 
-        LogManager.getLogger().info("Requesting skin for player {} with id {}", model.getName(), model.getId());
+        LogManager.getLogger().info("Requesting skin for player {}", model);
 
         Object signal = new Object();
         playerSkinRequests.put(model, signal);
@@ -85,7 +85,7 @@ public class SkinLoaderService {
                 try {
                     signal.wait(5000);
                 } catch (InterruptedException e) {
-                    LogManager.getLogger().info("Error loading skin for player {}", model.getName());
+                    LogManager.getLogger().info("Error loading skin for player {}", model);
                 }
                 playerSkinRequests.remove(model);
             }
