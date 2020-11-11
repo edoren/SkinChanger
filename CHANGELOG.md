@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.0
+- Update to forge 1.15.2-31.2.0
+
 ## 0.1-beta.3
 - Update mod description and added logo
 - Fixed issue when an online server resolves wrongly the player head
