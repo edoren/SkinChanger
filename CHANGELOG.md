@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1-beta.3
+- Update mod description and added logo
+- Fixed issue when an online server resolves wrongly the player head
+- Fixed issue for player head not being loaded of the player is not online
+
 ## 0.1-beta.2
 - Removed unused config file
 - Added support for skull rendering
