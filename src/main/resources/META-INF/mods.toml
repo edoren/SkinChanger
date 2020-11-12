@@ -1,4 +1,5 @@
 modLoader="javafml"
+license="MIT"
 loaderVersion="[31,)" 
 issueTrackerURL="https://github.com/edoren/SkinChanger/issues?q=is:Aissue+is:Aopen+sort:Aupdated-desc"
 
@@ -11,9 +12,7 @@ displayURL="https://github.com/edoren/SkinChanger"
 logoFile="logo.png"
 # credits=""
 authors="Edoren"
-description='''
-This mod allows you to change your Minecraft server skin on the fly even if it is in offline mode.
-'''
+description="This mod allows you to change your Minecraft server skin on the fly even if it is in offline mode."
 
 [[dependencies.skin_changer]]
     modId="forge"
@@ -25,6 +24,6 @@ This mod allows you to change your Minecraft server skin on the fly even if it i
 [[dependencies.skin_changer]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.4]"
     ordering="NONE"
     side="BOTH"

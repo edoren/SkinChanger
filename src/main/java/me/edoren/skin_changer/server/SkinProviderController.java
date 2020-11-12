@@ -66,7 +66,7 @@ public class SkinProviderController {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void initialize(String saveFolder) {
+    public void initialize(File saveFolder) {
         File skinsDir = new File(saveFolder, DataType.SKIN + "s");
         File capesDir = new File(saveFolder, DataType.CAPE + "s");
         skinsDir.mkdirs();

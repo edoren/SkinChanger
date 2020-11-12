@@ -11,6 +11,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -111,24 +112,24 @@ public class SkinsCommand {
     }
 
     private static Integer setPlayerSkinByName(PlayerEntity sourcePlayer, PlayerEntity targetPlayer, String playerName) {
-        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading skin...")));
+        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading skin...")), Util.DUMMY_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerSkinByName(targetPlayer.getGameProfile(), playerName, true)) {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the skin")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the skin")), Util.DUMMY_UUID);
             } else {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Skin loaded successfully")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Skin loaded successfully")), Util.DUMMY_UUID);
             }
         });
         return 1;
     }
 
     private static Integer setPlayerSkinByURL(PlayerEntity sourcePlayer, PlayerEntity targetPlayer, URL url) {
-        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading skin...")));
+        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading skin...")), Util.DUMMY_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerSkinByURL(targetPlayer.getGameProfile(), url, true)) {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the skin")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the skin")), Util.DUMMY_UUID);
             } else {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Skin loaded successfully")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Skin loaded successfully")), Util.DUMMY_UUID);
             }
         });
         return 1;
@@ -147,24 +148,24 @@ public class SkinsCommand {
     }
 
     private static Integer setPlayerCapeByName(PlayerEntity sourcePlayer, PlayerEntity targetPlayer, String playerName) {
-        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading cape...")));
+        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading cape...")), Util.DUMMY_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerCapeByName(targetPlayer.getGameProfile(), playerName, true)) {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the cape")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the cape")), Util.DUMMY_UUID);
             } else {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Cape loaded successfully")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Cape loaded successfully")), Util.DUMMY_UUID);
             }
         });
         return 1;
     }
 
     private static Integer setPlayerCapeByURL(PlayerEntity sourcePlayer, PlayerEntity targetPlayer, URL url) {
-        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading cape...")));
+        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Loading cape...")), Util.DUMMY_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerCapeByURL(targetPlayer.getGameProfile(), url, true)) {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the cape")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Could not load the cape")), Util.DUMMY_UUID);
             } else {
-                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Cape loaded successfully")));
+                sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Cape loaded successfully")), Util.DUMMY_UUID);
             }
         });
         return 1;
@@ -173,10 +174,10 @@ public class SkinsCommand {
     private static Integer cleanPlayerSkin(CommandSource source, Entity targetEntity) throws CommandSyntaxException {
         PlayerEntity sourcePlayer = (PlayerEntity) source.assertIsEntity();
         PlayerEntity targetPlayer = (PlayerEntity) targetEntity;
-        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Removing skin...")));
+        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Removing skin...")), Util.DUMMY_UUID);
         SharedPool.get().execute(() -> {
             SkinProviderController.GetInstance().cleanPlayerSkin(targetPlayer.getGameProfile());
-            sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Skin removed successfully")));
+            sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Skin removed successfully")), Util.DUMMY_UUID);
         });
         return 1;
     }
@@ -184,10 +185,10 @@ public class SkinsCommand {
     private static Integer cleanPlayerCape(CommandSource source, Entity targetEntity) throws CommandSyntaxException {
         PlayerEntity sourcePlayer = (PlayerEntity) source.assertIsEntity();
         PlayerEntity targetPlayer = (PlayerEntity) targetEntity;
-        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Removing cape...")));
+        sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Removing cape...")), Util.DUMMY_UUID);
         SharedPool.get().execute(() -> {
             SkinProviderController.GetInstance().cleanPlayerCape(targetPlayer.getGameProfile());
-            sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Cape removed successfully")));
+            sourcePlayer.sendMessage(new TranslationTextComponent("chat.type.announcement", ISSUER, new StringTextComponent("Cape removed successfully")), Util.DUMMY_UUID);
         });
         return 1;
     }

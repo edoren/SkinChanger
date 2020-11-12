@@ -1,11 +1,58 @@
 var ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI');
 var OPCODES = Java.type('org.objectweb.asm.Opcodes');
 
-// net/minecraft/client/entity/player/AbstractClientPlayerEntity/func_110303_q (getLocationCape)
+var methodsData = {
+    "AbstractClientPlayerEntity/getLocationCape": {
+        "aliases": ["getLocationCape", "func_110303_q"],
+        "desc": "()Lnet/minecraft/util/ResourceLocation;"
+    },
+    "AbstractClientPlayerEntity/getLocationSkin": {
+        "aliases": ["getLocationSkin", "func_110306_p"],
+        "desc": "()Lnet/minecraft/util/ResourceLocation;"
+    },
+    "AbstractClientPlayerEntity/getSkinType": {
+        "aliases": ["getSkinType", "func_175154_l"],
+        "desc": "()Ljava/lang/String;"
+    },
+    "SkullTileEntityRenderer/getRenderType": {
+        "aliases": ["getRenderType", "func_228878_a_"],
+        "desc": "(Lnet/minecraft/block/SkullBlock$ISkullType;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/client/renderer/RenderType;"
+    },
+    "PlayerTabOverlayGui/render": {
+        "aliases": ["render", "func_238523_a_"],
+        "desc": "(Lcom/mojang/blaze3d/matrix/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreObjective;)V"
+    },
+    "TextureManager/bindTexture": {
+        "aliases": ["bindTexture", "func_110577_a"],
+        "desc": "(Lnet/minecraft/util/ResourceLocation;)V"
+    }
+};
+
+function checkMethod(key, method) {
+    if (typeof method.name === 'undefined' || typeof method.desc === 'undefined') {
+        return false;
+    }
+
+    var methodAliases = methodsData[key]["aliases"];
+    var methodDesc = methodsData[key]["desc"];
+
+    if (method.desc === methodDesc) {
+        for (var i = 0; i < methodAliases.length; i++) {
+            if (methodAliases[i] === method.name) {
+                print("[SkinChanger] Fixing method", key);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+// net/minecraft/client/entity/player/AbstractClientPlayerEntity/getLocationCape
 function transformMethod001(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
-        if (OPCODES.ARETURN === insn.getOpcode()) {
+        if (insn.getOpcode() === OPCODES.ARETURN) {
             var tmp = ASMAPI.getMethodNode();
             tmp.visitVarInsn(OPCODES.ASTORE, 2);
             tmp.visitVarInsn(OPCODES.ALOAD, 0);
@@ -17,11 +64,11 @@ function transformMethod001(node) {
     }
 }
 
-// net/minecraft/client/entity/player/AbstractClientPlayerEntity/func_110306_p (getLocationSkin)
+// net/minecraft/client/entity/player/AbstractClientPlayerEntity/getLocationSkin
 function transformMethod002(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
-        if (OPCODES.ARETURN === insn.getOpcode()) {
+        if (insn.getOpcode() === OPCODES.ARETURN) {
             var tmp = ASMAPI.getMethodNode();
             tmp.visitVarInsn(OPCODES.ASTORE, 2);
             tmp.visitVarInsn(OPCODES.ALOAD, 0);
@@ -33,11 +80,11 @@ function transformMethod002(node) {
     }
 }
 
-// net/minecraft/client/entity/player/AbstractClientPlayerEntity/func_175154_l (getSkinType)
+// net/minecraft/client/entity/player/AbstractClientPlayerEntity/getSkinType
 function transformMethod003(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
-        if (OPCODES.ARETURN === insn.getOpcode()) {
+        if (insn.getOpcode() === OPCODES.ARETURN) {
             var tmp = ASMAPI.getMethodNode();
             tmp.visitVarInsn(OPCODES.ASTORE, 2);
             tmp.visitVarInsn(OPCODES.ALOAD, 0);
@@ -49,11 +96,11 @@ function transformMethod003(node) {
     }
 }
 
-// net/minecraft/client/renderer/tileentity/SkullTileEntityRenderer/func_228878_a_
+// net/minecraft/client/renderer/tileentity/SkullTileEntityRenderer/getRenderType
 function transformMethod004(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
-        if (OPCODES.ARETURN === insn.getOpcode()) {
+        if (insn.getOpcode() === OPCODES.ARETURN) {
             var tmp = ASMAPI.getMethodNode();
             tmp.visitVarInsn(OPCODES.ASTORE, 2);
             tmp.visitVarInsn(OPCODES.ALOAD, 0);
@@ -66,20 +113,22 @@ function transformMethod004(node) {
     }
 }
 
-// net/minecraft/client/gui/overlay/PlayerTabOverlayGui/func_175249_a (render)
+// net/minecraft/client/gui/overlay/PlayerTabOverlayGui/render
 function transformMethod005(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
-        if (OPCODES.ISTORE === insn.getOpcode() && 11 === insn.var) {
+        if (insn.getOpcode() === OPCODES.ISTORE && insn.var === 12) {
+            // Set this to 1:
+            // boolean flag = this.mc.isIntegratedServerRunning() || this.mc.getConnection().getNetworkManager().isEncrypted();
             var tmp = ASMAPI.getMethodNode();
             tmp.visitInsn(OPCODES.POP);
             tmp.visitInsn(OPCODES.ICONST_1);
             i += tmp.instructions.size();
             node.instructions.insertBefore(insn, tmp.instructions);
-        } else if (OPCODES.INVOKEVIRTUAL === insn.getOpcode() && 'func_110577_a' === insn.name) { // bindTexture
+        } else if (insn.getOpcode() === OPCODES.INVOKEVIRTUAL && checkMethod('TextureManager/bindTexture', insn)) {
             var tmp = ASMAPI.getMethodNode();
             tmp.visitVarInsn(OPCODES.ASTORE, 33);
-            tmp.visitVarInsn(OPCODES.ALOAD, 26);
+            tmp.visitVarInsn(OPCODES.ALOAD, 27);
             tmp.visitVarInsn(OPCODES.ALOAD, 33);
             tmp.visitMethodInsn(OPCODES.INVOKESTATIC, 'me/edoren/skin_changer/client/ClientASMHooks', 'getLocationTabOverlaySkin', '(Lcom/mojang/authlib/GameProfile;Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;', false);
             i += tmp.instructions.size();
@@ -97,12 +146,13 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
-                    if ('func_110303_q' === method.name)
+                    if (checkMethod('AbstractClientPlayerEntity/getLocationCape', method)) {
                         transformMethod001(method);
-                    else if ('func_110306_p' === method.name)
+                    } else if (checkMethod('AbstractClientPlayerEntity/getLocationSkin', method)) {
                         transformMethod002(method);
-                    else if ('func_175154_l' === method.name)
+                    } else if (checkMethod('AbstractClientPlayerEntity/getSkinType', method)) {
                         transformMethod003(method);
+                    }
                 });
                 return node;
             }
@@ -114,8 +164,9 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
-                    if ('func_228878_a_' === method.name)
+                    if (checkMethod('SkullTileEntityRenderer/getRenderType', method)) {
                         transformMethod004(method);
+                    }
                 });
                 return node;
             }
@@ -127,8 +178,9 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
-                    if ('func_175249_a' === method.name)
+                    if (checkMethod('PlayerTabOverlayGui/render', method)) {
                         transformMethod005(method);
+                    }
                 });
                 return node;
             }

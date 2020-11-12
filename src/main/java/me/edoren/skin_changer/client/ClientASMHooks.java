@@ -30,7 +30,7 @@ public class ClientASMHooks {
             if (loc == null)
                 SkinLoaderService.GetInstance().requestPlayerSkin(new PlayerModel(profile));
             else
-                return RenderType.func_228644_e_(loc);
+                return RenderType.getEntityTranslucent(loc);
         }
         return result;
     }

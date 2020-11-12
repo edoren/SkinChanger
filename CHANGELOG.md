@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.0
+- Update to forge 1.16.4-35.0.15
+
 ## 0.1.0
 - Update to forge 1.15.2-31.2.0
 
