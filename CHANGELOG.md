@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+- Fixed runtime incompatibility with 1.16.3
+- Fixed possible null pointer exception on PlayerModel
+
 ## 0.2.0
 - Update to forge 1.16.4-35.0.15
 

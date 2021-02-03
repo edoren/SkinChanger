@@ -24,6 +24,6 @@ description="This mod allows you to change your Minecraft server skin on the fly
 [[dependencies.skin_changer]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.4]"
+    versionRange="[1.16.3,1.16.4]"
     ordering="NONE"
     side="BOTH"
