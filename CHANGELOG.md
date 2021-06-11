@@ -2,6 +2,7 @@
 
 ## 0.2.2
 - Update to forge 1.16.5-36.1.0
+- Try to use Minecraft skin if no cache skin is found
 
 ## 0.2.1
 - Fixed runtime incompatibility with 1.16.3
