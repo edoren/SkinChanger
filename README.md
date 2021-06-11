@@ -33,5 +33,14 @@ Admin commands:
 ## Acknowledgments
 Big thanks to the project [OfflineSkins](https://www.curseforge.com/minecraft/mc-mods/offlineskins) I based most of the code and ideas from this mod.
 
-## Contribution
-Feel free to submit a PR for features or bugfixes that you want to include.
+## Report Bugs
+If you find an issue when using the mod please report it here:  
+https://github.com/edoren/SkinChanger/issues
+
+## Contribute
+To contribute to the code development, please create new a new pull request:  
+https://github.com/edoren/SkinChanger/pulls
+
+## Donate
+If you like this project and want to support it's developement please consider to donate.  
+[![Donate with PayPal](https://freepngimg.com/save/15064-paypal-donate-button-picture/284x136)](https://www.paypal.com/donate?hosted_button_id=H6X6Y6QV22R7S)

@@ -295,9 +295,15 @@ public class SkinProviderController {
         SharedPool.get().execute(() -> {
             sendAllDataToTarget(player);
             PlayerModel model = new PlayerModel(profile);
-            boolean succeeded = loadPlayerDataFromCache(model, DataType.SKIN);
-            succeeded = succeeded || loadPlayerDataFromCache(model, DataType.CAPE);
-            if (succeeded) {
+            boolean skinLoaded = loadPlayerDataFromCache(model, DataType.SKIN);
+            boolean capeLoaded = loadPlayerDataFromCache(model, DataType.CAPE);
+            if (!skinLoaded) {
+                skinLoaded = setPlayerSkinByName(profile, profile.getName(), true);
+            }
+            if (!capeLoaded) {
+                capeLoaded = setPlayerCapeByName(profile, profile.getName(), true);
+            }
+            if (skinLoaded || capeLoaded) {
                 sendPlayerDataToAll(model);
             }
         });
