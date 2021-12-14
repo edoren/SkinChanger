@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.edoren.skin_changer.common.SharedPool;
 import net.minecraft.Util;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -36,15 +37,15 @@ public class SkinsCommand {
 
     static final TextComponent ISSUER = new TextComponent("SkinChanger");
 
-    public static ArgumentBuilder<CommandSourceStack, ?> setCommand(Function3<CommandSourceStack, Entity, String, Integer> setFunction,
-                                                                    Function<CommandContext<CommandSourceStack>, Entity> getTarget) {
+    public static ArgumentBuilder<CommandSourceStack, ?> setCommand(Function3<CommandSourceStack, Player, String, Integer> setFunction,
+                                                                    Function<CommandContext<CommandSourceStack>, Player> getTarget) {
         return Commands.literal("set").then(Commands.argument("arg", MessageArgument.message()).executes((context) ->
                 setFunction.apply(context.getSource(), getTarget.apply(context), MessageArgument.getMessage(context, "arg").getString())
         ));
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> cleanCommand(Function2<CommandSourceStack, Entity, Integer> cleanFunction,
-                                                                      Function<CommandContext<CommandSourceStack>, Entity> getTarget) {
+    public static ArgumentBuilder<CommandSourceStack, ?> cleanCommand(Function2<CommandSourceStack, Player, Integer> cleanFunction,
+                                                                      Function<CommandContext<CommandSourceStack>, Player> getTarget) {
         return Commands.literal("clear").executes((context) ->
                 cleanFunction.apply(context.getSource(), getTarget.apply(context))
         );
@@ -54,22 +55,22 @@ public class SkinsCommand {
         dispatcher.register(Commands.literal("skin")
                 .then(setCommand(
                         SkinsCommand::setPlayerSkin,
-                        (context) -> context.getSource().getEntityOrException())
+                        (context) -> context.getSource().getPlayerOrException())
                 )
                 .then(cleanCommand(
                         SkinsCommand::cleanPlayerSkin,
-                        (context) -> context.getSource().getEntityOrException())
+                        (context) -> context.getSource().getPlayerOrException())
                 )
                 .then(Commands.literal("player")
-                        .requires((player) -> player.hasPermission(2))  // TODO: Check this
-                        .then(Commands.argument("target", EntityArgument.entity())
+                        .requires((player) -> player.hasPermission(2))
+                        .then(Commands.argument("target", EntityArgument.player())
                                 .then(setCommand(
                                         SkinsCommand::setPlayerSkin,
-                                        (context) -> EntityArgument.getEntity(context, "target"))
+                                        (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
                                 .then(cleanCommand(
                                         SkinsCommand::cleanPlayerSkin,
-                                        (context) -> EntityArgument.getEntity(context, "target"))
+                                        (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
                         )
                 )
@@ -77,30 +78,33 @@ public class SkinsCommand {
         dispatcher.register(Commands.literal("cape")
                 .then(setCommand(
                         SkinsCommand::setPlayerCape,
-                        (context) -> context.getSource().getEntityOrException())
+                        (context) -> context.getSource().getPlayerOrException())
                 )
                 .then(cleanCommand(
                         SkinsCommand::cleanPlayerCape,
-                        (context) -> context.getSource().getEntityOrException())
+                        (context) -> context.getSource().getPlayerOrException())
                 )
                 .then(Commands.literal("player")
-                        .requires((player) -> player.hasPermission(2)) // TODO: Check this
-                        .then(Commands.argument("target", EntityArgument.entity())
+                        .requires((player) -> player.hasPermission(2))
+                        .then(Commands.argument("target", EntityArgument.player())
                                 .then(setCommand(
                                         SkinsCommand::setPlayerCape,
-                                        (context) -> context.getSource().getEntityOrException())
+                                        (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
                                 .then(cleanCommand(
                                         SkinsCommand::cleanPlayerCape,
-                                        (context) -> context.getSource().getEntityOrException())
+                                        (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
                         )
                 )
         );
     }
 
-    private static Integer setPlayerSkin(CommandSourceStack source, Entity targetEntity, String arg) throws CommandSyntaxException {
-        Player sourcePlayer = (Player) source.getEntityOrException();
+    private static Integer setPlayerSkin(CommandSourceStack source, Entity targetEntity, String arg) {
+        CommandSource sourcePlayer = source.getServer();
+        if (source.getEntity() != null) {
+            sourcePlayer = source.getEntity();
+        }
         Player targetPlayer = (Player) targetEntity;
         try {
             URL url = new URL(arg);
@@ -110,7 +114,7 @@ public class SkinsCommand {
         }
     }
 
-    private static Integer setPlayerSkinByName(Player sourcePlayer, Player targetPlayer, String playerName) {
+    private static Integer setPlayerSkinByName(CommandSource sourcePlayer, Player targetPlayer, String playerName) {
         sourcePlayer.sendMessage(new TranslatableComponent("chat.type.announcement", ISSUER, new TextComponent("Loading skin...")), Util.NIL_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerSkinByName(targetPlayer.getGameProfile(), playerName, true)) {
@@ -122,7 +126,7 @@ public class SkinsCommand {
         return 1;
     }
 
-    private static Integer setPlayerSkinByURL(Player sourcePlayer, Player targetPlayer, URL url) {
+    private static Integer setPlayerSkinByURL(CommandSource sourcePlayer, Player targetPlayer, URL url) {
         sourcePlayer.sendMessage(new TranslatableComponent("chat.type.announcement", ISSUER, new TextComponent("Loading skin...")), Util.NIL_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerSkinByURL(targetPlayer.getGameProfile(), url, true)) {
@@ -134,19 +138,21 @@ public class SkinsCommand {
         return 1;
     }
 
-    private static Integer setPlayerCape(CommandSourceStack source, Entity targetEntity, String arg) throws CommandSyntaxException {
-        Player sourcePlayer = (Player) source.getEntityOrException();
+    private static Integer setPlayerCape(CommandSourceStack source, Entity targetEntity, String arg) {
+        CommandSource sourcePlayer = source.getServer();
+        if (source.getEntity() != null) {
+            sourcePlayer = source.getEntity();
+        }
         Player targetPlayer = (Player) targetEntity;
         try {
             URL url = new URL(arg);
             return setPlayerCapeByURL(sourcePlayer, targetPlayer, url);
         } catch (MalformedURLException e) {
             return setPlayerCapeByName(sourcePlayer, targetPlayer, arg);
-            // sourcePlayer.sendMessage(new TranslatableComponent("chat.type.announcement", ISSUER, new TextComponent("Could not parse " + urlString + " as url")));
         }
     }
 
-    private static Integer setPlayerCapeByName(Player sourcePlayer, Player targetPlayer, String playerName) {
+    private static Integer setPlayerCapeByName(CommandSource sourcePlayer, Player targetPlayer, String playerName) {
         sourcePlayer.sendMessage(new TranslatableComponent("chat.type.announcement", ISSUER, new TextComponent("Loading cape...")), Util.NIL_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerCapeByName(targetPlayer.getGameProfile(), playerName, true)) {
@@ -158,7 +164,7 @@ public class SkinsCommand {
         return 1;
     }
 
-    private static Integer setPlayerCapeByURL(Player sourcePlayer, Player targetPlayer, URL url) {
+    private static Integer setPlayerCapeByURL(CommandSource sourcePlayer, Player targetPlayer, URL url) {
         sourcePlayer.sendMessage(new TranslatableComponent("chat.type.announcement", ISSUER, new TextComponent("Loading cape...")), Util.NIL_UUID);
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerCapeByURL(targetPlayer.getGameProfile(), url, true)) {
