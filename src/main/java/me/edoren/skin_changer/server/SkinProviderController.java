@@ -11,10 +11,10 @@ import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.common.models.PlayerModel;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
 import me.edoren.skin_changer.server.providers.ISkinProvider;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -93,7 +93,7 @@ public class SkinProviderController {
         providers.get(DataType.SKIN).add(provider);
     }
 
-    public boolean getPlayerSkin(GameProfile profile, ServerPlayerEntity requestingPlayer) {
+    public boolean getPlayerSkin(GameProfile profile, ServerPlayer requestingPlayer) {
         PlayerModel model = new PlayerModel(profile);
         if (loadedData.get(DataType.SKIN).containsKey(model) || loadPlayerDataFromCache(model, DataType.SKIN)) {
             sendDataToTarget(model, requestingPlayer);
@@ -159,14 +159,14 @@ public class SkinProviderController {
         return true;
     }
 
-    private void sendDataToTarget(PlayerModel profile, ServerPlayerEntity target) {
+    private void sendDataToTarget(PlayerModel profile, ServerPlayer target) {
         Vector<PlayerSkinModel> playerSkinData = new Vector<>();
         playerSkinData.add(getPlayerSkinData(profile));
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
         NetworkContext.GetInstance().getSimpleChannel().send(PacketDistributor.PLAYER.with(() -> target), message);
     }
 
-    private void sendAllDataToTarget(ServerPlayerEntity target) {
+    private void sendAllDataToTarget(ServerPlayer target) {
         Vector<PlayerSkinModel> playerSkinData = new Vector<>();
 
         Set<PlayerModel> set = new HashSet<>();
@@ -289,7 +289,7 @@ public class SkinProviderController {
     }
 
     private void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         GameProfile profile = event.getPlayer().getGameProfile();
         LogManager.getLogger().info("Player {} just logged in with id {}", profile.getName(), profile.getId());
         SharedPool.get().execute(() -> {

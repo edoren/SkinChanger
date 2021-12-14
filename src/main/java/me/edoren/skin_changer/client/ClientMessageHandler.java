@@ -4,10 +4,10 @@ import me.edoren.skin_changer.client.api.SkinLoaderService;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Optional;
@@ -31,15 +31,15 @@ public class ClientMessageHandler {
         }
 
         if (!message.isMessageValid()) {
-            LogManager.getLogger().warn("PlayerSkinUpdateMessage was invalid" + message.toString());
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage was invalid" + message);
             return;
         }
 
         // We know for sure that this handler is only used on the client side, so it is ok to assume
         // that the ctx handler is a client, and that Minecraft exists.
-        Optional<ClientWorld> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(sideReceived);
-        if (!clientWorld.isPresent()) {
-            LogManager.getLogger().warn("PlayerSkinUpdateMessage context could not provide a ClientWorld.");
+        Optional<ClientLevel> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(sideReceived);
+        if (clientWorld.isEmpty()) {
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage context could not provide a ClientLevel.");
             return;
         }
 

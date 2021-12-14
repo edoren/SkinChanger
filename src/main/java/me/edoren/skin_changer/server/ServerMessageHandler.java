@@ -4,9 +4,9 @@ import com.mojang.authlib.GameProfile;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.SharedPool;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Supplier;
@@ -35,7 +35,7 @@ public class ServerMessageHandler {
         //  that the ctx handler is a serverhandler, and that ServerPlayerEntity exists
         // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
-        final ServerPlayerEntity sendingPlayer = ctx.getSender();
+        final ServerPlayer sendingPlayer = ctx.getSender();
         if (sendingPlayer == null) {
             LogManager.getLogger().warn("EntityPlayer was null when PlayerSkinRequestMessage was received");
         }
@@ -45,7 +45,7 @@ public class ServerMessageHandler {
         ctx.enqueueWork(() -> processMessage(message, sendingPlayer));
     }
 
-    static void processMessage(PlayerSkinRequestMessage message, ServerPlayerEntity sendingPlayer) {
+    static void processMessage(PlayerSkinRequestMessage message, ServerPlayer sendingPlayer) {
         SharedPool.execute(() -> {
             GameProfile profile = message.getPlayer().toGameProfile();
             LogManager.getLogger().info("Requested skin for player {}[{}]", profile.getName(), profile.getId());

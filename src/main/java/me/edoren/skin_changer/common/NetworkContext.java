@@ -4,9 +4,12 @@ import me.edoren.skin_changer.client.ClientMessageHandler;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.server.ServerMessageHandler;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+//import net.minecraft.util.ResourceLocation;
+//import net.minecraftforge.fml.network.NetworkRegistry;
+//import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkContext {
     private static NetworkContext singleInstance = null;

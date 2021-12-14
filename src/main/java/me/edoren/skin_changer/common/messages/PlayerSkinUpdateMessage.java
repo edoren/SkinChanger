@@ -2,7 +2,7 @@ package me.edoren.skin_changer.common.messages;
 
 import me.edoren.skin_changer.common.models.PlayerModel;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Vector;
@@ -33,7 +33,7 @@ public class PlayerSkinUpdateMessage {
      * Called by the network code once it has received the message bytes over the network.
      * Used to read the ByteBuf contents into your member variables
      */
-    public static PlayerSkinUpdateMessage decode(PacketBuffer buf) {
+    public static PlayerSkinUpdateMessage decode(FriendlyByteBuf buf) {
         PlayerSkinUpdateMessage ret = new PlayerSkinUpdateMessage();
         try {
             int size = buf.readInt();
@@ -43,10 +43,10 @@ public class PlayerSkinUpdateMessage {
                 int bufferSize;
 
                 bufferSize = buf.readInt();
-                String name = buf.readString(bufferSize);
+                String name = buf.readUtf(bufferSize);
 
                 bufferSize = buf.readInt();
-                String uuid = buf.readString(bufferSize);
+                String uuid = buf.readUtf(bufferSize);
 
                 byte[] skin = null;
                 bufferSize = buf.readInt();
@@ -78,7 +78,7 @@ public class PlayerSkinUpdateMessage {
      * Called by the network code.
      * Used to write the contents of your message member variables into the ByteBuf, ready for transmission over the network.
      */
-    public void encode(PacketBuffer buf) {
+    public void encode(FriendlyByteBuf buf) {
         if (!messageIsValid) return;
         buf.writeInt(playerSkinData.size());
         for (int i = 0; i != playerSkinData.size(); i++) {
@@ -87,10 +87,10 @@ public class PlayerSkinUpdateMessage {
             PlayerSkinModel player = playerSkinData.get(i);
 
             buf.writeInt(player.getPlayer().getName().length());
-            buf.writeString(player.getPlayer().getName());
+            buf.writeUtf(player.getPlayer().getName());
 
             buf.writeInt(player.getPlayer().getId().length());
-            buf.writeString(player.getPlayer().getId());
+            buf.writeUtf(player.getPlayer().getId());
 
             bufferSize = player.getSkin() != null ? player.getSkin().length : 0;
             buf.writeInt(bufferSize);

@@ -4,9 +4,9 @@ import me.edoren.skin_changer.client.api.ISkin;
 import me.edoren.skin_changer.client.api.SkinLoaderService;
 import me.edoren.skin_changer.common.models.PlayerModel;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
@@ -61,14 +61,14 @@ public class ClientController {
     public CustomSkinTexture getOrCreateTexture(ByteBuffer data, ISkin skin) {
         if (!textures.containsKey(data)) {
             CustomSkinTexture texture = new CustomSkinTexture(generateRandomLocation(), data);
-            Minecraft.getInstance().getTextureManager().loadTexture(texture.getLocation(), texture);
+            Minecraft.getInstance().getTextureManager().register(texture.getLocation(), texture);
             textures.put(data, texture);
 
             if (skin != null) {
                 skin.setRemovalListener(s -> {
                     if (data == s.getData()) {
                         Minecraft.getInstance().execute(() -> {
-                            Minecraft.getInstance().getTextureManager().deleteTexture(texture.getLocation());
+                            Minecraft.getInstance().getTextureManager().release(texture.getLocation());
                             textures.remove(data);
                         });
                     }
@@ -80,9 +80,9 @@ public class ClientController {
 
     private void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            World world = Minecraft.getInstance().world;
+            ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
-                for (PlayerEntity player : world.getPlayers()) {
+                for (AbstractClientPlayer player : world.players()) {
                     PlayerModel model = new PlayerModel(player.getGameProfile());
                     SkinLoaderService.GetInstance().getSkin(model);
                     SkinLoaderService.GetInstance().getCape(model);
@@ -92,6 +92,6 @@ public class ClientController {
     }
 
     private ResourceLocation generateRandomLocation() {
-        return new ResourceLocation("skin_changer", String.format("textures/generated/%s", UUID.randomUUID().toString()));
+        return new ResourceLocation("skin_changer", String.format("textures/generated/%s", UUID.randomUUID()));
     }
 }
