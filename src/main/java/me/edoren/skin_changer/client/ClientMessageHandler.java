@@ -4,7 +4,7 @@ import me.edoren.skin_changer.client.api.SkinLoaderService;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
-import net.minecraft.client.multiplayer.ClientLevel;
+//import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.common.util.LogicalSidedProvider;
