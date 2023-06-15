@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0
+- Update to forge 1.17.1-37.1.1
+
 ## 0.2.2
 - Update to forge 1.16.5-36.1.0
 - Try to use Minecraft skin if no cache skin is found
