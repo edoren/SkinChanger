@@ -5,7 +5,9 @@ import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.LogicalSidedProvider;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +47,9 @@ public class ClientMessageHandler {
 
         // This code creates a new task which will be executed by the client during the next tick
         // In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
-        ctx.enqueueWork(() -> processMessage(message));
+        ctx.enqueueWork(() -> // make sure it's only executed on the client
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> processMessage(message))
+        );
     }
 
     private static void processMessage(PlayerSkinUpdateMessage message) {

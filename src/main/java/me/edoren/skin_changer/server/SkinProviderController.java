@@ -289,8 +289,8 @@ public class SkinProviderController {
     }
 
     private void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
-        GameProfile profile = event.getPlayer().getGameProfile();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        GameProfile profile = event.getEntity().getGameProfile();
         LogManager.getLogger().info("Player {} just logged in with id {}", profile.getName(), profile.getId());
         SharedPool.get().execute(() -> {
             sendAllDataToTarget(player);
@@ -310,7 +310,7 @@ public class SkinProviderController {
     }
 
     private void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        GameProfile profile = event.getPlayer().getGameProfile();
+        GameProfile profile = event.getEntity().getGameProfile();
         PlayerModel model = new PlayerModel(profile);
         if (loadedData.get(DataType.SKIN).containsKey(model) || loadedData.get(DataType.CAPE).containsKey(model)) {
             LogManager.getLogger().info("Removing session data for player {}[{}]", profile.getName(), profile.getId());
