@@ -1,6 +1,6 @@
 modLoader="javafml"
 license="MIT"
-loaderVersion="[38,)"
+loaderVersion="[41,)"
 issueTrackerURL="https://github.com/edoren/SkinChanger/issues?q=is:Aissue+is:Aopen+sort:Aupdated-desc"
 
 [[mods]]
@@ -17,13 +17,13 @@ description="This mod allows you to change your Minecraft server skin on the fly
 [[dependencies.skin_changer]]
     modId="forge"
     mandatory=true
-    versionRange="[38,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.skin_changer]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"

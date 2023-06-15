@@ -5,6 +5,8 @@ import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.SharedPool;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +44,9 @@ public class ServerMessageHandler {
 
         // This code creates a new task which will be executed by the server during the next tick,
         //  In this case, the task is to call messageHandlerOnServer.processMessage(message, sendingPlayer)
-        ctx.enqueueWork(() -> processMessage(message, sendingPlayer));
+        ctx.enqueueWork(() -> // make sure it's only executed on the physical client
+                DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> processMessage(message, sendingPlayer))
+        );
     }
 
     static void processMessage(PlayerSkinRequestMessage message, ServerPlayer sendingPlayer) {
