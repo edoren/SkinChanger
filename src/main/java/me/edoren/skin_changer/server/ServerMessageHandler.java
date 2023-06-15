@@ -6,7 +6,7 @@ import me.edoren.skin_changer.common.SharedPool;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.function.Supplier;
