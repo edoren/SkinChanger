@@ -4,7 +4,7 @@
 This mod allows you to change your Minecraft server skin on the fly even if it is in offline mode.
 
 ## Requirements
-- Forge Version: 1.17.1-37.1.1 or higher
+- Forge Version: 1.18-38.0.17 or higher (1.18.X)
 
 ## How to use
 
