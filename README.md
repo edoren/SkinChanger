@@ -4,7 +4,6 @@
 This mod allows you to change your Minecraft server skin on the fly even if it is in offline mode.
 
 ## How to use
-
 Player commands:
 
 | Command            | Description                                            |
