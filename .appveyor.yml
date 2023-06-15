@@ -33,7 +33,7 @@ deploy:
     Created automatically by AppVeyor.
     https://ci.appveyor.com/project/edoren/skinchanger/builds/$(APPVEYOR_BUILD_ID)
   auth_token:
-    secure: pLBhgKwl5E3O4z/7aAn/qt+w2mGb23xbFe6nikPfGV6xeERmIvQltylYc3mKJ7iI
+    secure: +E13X50wp6z30yW/pAm/gAzPgXMmz5t0deuGMKJN6wY8UkZn2xx9m/yYqvQ6nz6/
   artifact: /.*\.(jar)/
   force_update: true
   on:
