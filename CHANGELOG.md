@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.0
+- Update to forge 1.18-38.0.17
+
 ## 0.3.0
 - Update to forge 1.17.1-37.1.1
 

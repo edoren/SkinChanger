@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 
 @Mod("skin_changer")
 public class SkinChanger {
@@ -28,7 +28,7 @@ public class SkinChanger {
         ClientController.GetInstance().initialize();
     }
 
-    private void onServerStarted(FMLServerStartedEvent event) {
+    private void onServerStarted(ServerStartedEvent event) {
         ServerController.GetInstance().initialize(event.getServer());
     }
 }
