@@ -5,7 +5,7 @@ import me.edoren.skin_changer.common.Constants;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.server.ServerController;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,7 +29,7 @@ public class SkinChanger {
         ClientController.GetInstance().initialize();
     }
 
-    private void onServerStarted(ServerStartedEvent event) {
+    private void onServerStarted(ServerAboutToStartEvent event) {
         ServerController.GetInstance().initialize(event.getServer());
     }
 }

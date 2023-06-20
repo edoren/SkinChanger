@@ -5,14 +5,18 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.edoren.skin_changer.common.SharedPool;
+import me.edoren.skin_changer.server.permission.PermissionController;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.nodes.PermissionNode;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,63 +39,88 @@ public class SkinsCommand {
 
     static final Component ISSUER = Component.literal("SkinChanger");
 
+    public static Boolean checkPermission(ServerPlayer player, PermissionNode<Boolean> permissionNode) {
+        if (player != null && permissionNode != null) {
+            return PermissionAPI.getPermission(player, permissionNode);
+        }
+        return false;
+    }
+
     public static ArgumentBuilder<CommandSourceStack, ?> setCommand(Function3<CommandSourceStack, Player, String, Integer> setFunction,
-                                                                    Function<CommandContext<CommandSourceStack>, Player> getTarget) {
-        return Commands.literal("set").then(Commands.argument("arg", MessageArgument.message()).executes((context) ->
-                setFunction.apply(context.getSource(), getTarget.apply(context), MessageArgument.getMessage(context, "arg").getString())
-        ));
+                                                                    Function<CommandContext<CommandSourceStack>, Player> getTarget,
+                                                                    PermissionNode<Boolean> permissionNode) {
+        return Commands.literal("set")
+                .requires((player) -> (permissionNode != null) ? checkPermission(player.getPlayer(), permissionNode) : true)
+                .then(Commands.argument("arg", MessageArgument.message()).executes((context) ->
+                        setFunction.apply(context.getSource(), getTarget.apply(context), MessageArgument.getMessage(context, "arg").getString())
+                ));
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> clearCommand(Function2<CommandSourceStack, Player, Integer> clearFunction,
-                                                                      Function<CommandContext<CommandSourceStack>, Player> getTarget) {
-        return Commands.literal("clear").executes((context) ->
-                clearFunction.apply(context.getSource(), getTarget.apply(context))
-        );
+                                                                      Function<CommandContext<CommandSourceStack>, Player> getTarget,
+                                                                      PermissionNode<Boolean> permissionNode) {
+        return Commands.literal("clear")
+                .requires((player) -> (permissionNode != null) ? checkPermission(player.getPlayer(), permissionNode) : true)
+                .executes((context) ->
+                        clearFunction.apply(context.getSource(), getTarget.apply(context))
+                );
     }
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, PermissionController permissionController) {
         dispatcher.register(Commands.literal("skin")
+                .requires((player) -> checkPermission(player.getPlayer(), permissionController.getNode("skin")))
                 .then(setCommand(
                         SkinsCommand::setPlayerSkin,
-                        (context) -> context.getSource().getPlayerOrException())
+                        (context) -> context.getSource().getPlayerOrException(),
+                        permissionController.getNode("skin.set"))
                 )
                 .then(clearCommand(
                         SkinsCommand::clearPlayerSkin,
-                        (context) -> context.getSource().getPlayerOrException())
+                        (context) -> context.getSource().getPlayerOrException(),
+                        permissionController.getNode("skin.clear"))
                 )
                 .then(Commands.literal("player")
-                        .requires((player) -> player.hasPermission(2))
+                        .requires((player) -> (player.hasPermission(2) ||
+                                checkPermission(player.getPlayer(), permissionController.getNode("admin"))))
                         .then(Commands.argument("target", EntityArgument.player())
                                 .then(setCommand(
                                         SkinsCommand::setPlayerSkin,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
+                                        (context) -> EntityArgument.getPlayer(context, "target"),
+                                        null)
                                 )
                                 .then(clearCommand(
                                         SkinsCommand::clearPlayerSkin,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
+                                        (context) -> EntityArgument.getPlayer(context, "target"),
+                                        null)
                                 )
                         )
                 )
         );
         dispatcher.register(Commands.literal("cape")
+                .requires((player) -> checkPermission(player.getPlayer(), permissionController.getNode("cape")))
                 .then(setCommand(
                         SkinsCommand::setPlayerCape,
-                        (context) -> context.getSource().getPlayerOrException())
+                        (context) -> context.getSource().getPlayerOrException(),
+                        permissionController.getNode("cape.set"))
                 )
                 .then(clearCommand(
                         SkinsCommand::clearPlayerCape,
-                        (context) -> context.getSource().getPlayerOrException())
+                        (context) -> context.getSource().getPlayerOrException(),
+                        permissionController.getNode("cape.clear"))
                 )
                 .then(Commands.literal("player")
-                        .requires((player) -> player.hasPermission(2))
+                        .requires((player) -> player.hasPermission(2) ||
+                                checkPermission(player.getPlayer(), permissionController.getNode("admin")))
                         .then(Commands.argument("target", EntityArgument.player())
                                 .then(setCommand(
                                         SkinsCommand::setPlayerCape,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
+                                        (context) -> EntityArgument.getPlayer(context, "target"),
+                                        null)
                                 )
                                 .then(clearCommand(
                                         SkinsCommand::clearPlayerCape,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
+                                        (context) -> EntityArgument.getPlayer(context, "target"),
+                                        null)
                                 )
                         )
                 )
