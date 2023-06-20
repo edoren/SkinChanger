@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.1
+- Added translation files for ES-MX
+
 ## 0.6.0
 - Update to forge 1.20-46.0.14
 

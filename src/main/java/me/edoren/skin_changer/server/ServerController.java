@@ -1,5 +1,6 @@
 package me.edoren.skin_changer.server;
 
+import me.edoren.skin_changer.common.Constants;
 import me.edoren.skin_changer.server.permission.PermissionController;
 import me.edoren.skin_changer.server.providers.CrafatarCapeProvider;
 import me.edoren.skin_changer.server.providers.CrafatarSkinProvider;
@@ -30,7 +31,7 @@ public class ServerController {
         SkinsCommand.register(server.getFunctions().getDispatcher(), this.permissionController);
 
         Path savesFolder = server.getWorldPath(LevelResource.ROOT);
-        File skinChangerFolder = Paths.get(savesFolder.toString(), "skin_changer").normalize().toFile();
+        File skinChangerFolder = Paths.get(savesFolder.toString(), Constants.MOD_ID).normalize().toFile();
 
         SkinProviderController.GetInstance().initialize(skinChangerFolder);
         SkinProviderController.GetInstance().registerSkinProvider(new CrafatarSkinProvider());
