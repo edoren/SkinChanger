@@ -2,6 +2,7 @@ package me.edoren.skin_changer.client;
 
 import me.edoren.skin_changer.client.api.ISkin;
 import me.edoren.skin_changer.client.api.SkinLoaderService;
+import me.edoren.skin_changer.common.Constants;
 import me.edoren.skin_changer.common.models.PlayerModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -92,6 +93,6 @@ public class ClientController {
     }
 
     private ResourceLocation generateRandomLocation() {
-        return new ResourceLocation("skin_changer", String.format("textures/generated/%s", UUID.randomUUID()));
+        return new ResourceLocation(Constants.MOD_ID, String.format("textures/generated/%s", UUID.randomUUID()));
     }
 }

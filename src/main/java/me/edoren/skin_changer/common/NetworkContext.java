@@ -15,7 +15,7 @@ public class NetworkContext {
     private static NetworkContext singleInstance = null;
 
     public static final String MESSAGE_PROTOCOL_VERSION = "1.0";
-    public static final ResourceLocation simpleChannelRL = new ResourceLocation("skin_changer", "mbechannel");
+    public static final ResourceLocation simpleChannelRL = new ResourceLocation(Constants.MOD_ID, "mbechannel");
 
     public static final byte PLAYER_SKIN_UPDATE_MESSAGE_ID = 97;
     public static final byte PLAYER_SKIN_REQUEST_MESSAGE_ID = 98;
