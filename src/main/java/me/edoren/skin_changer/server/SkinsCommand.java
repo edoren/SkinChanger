@@ -42,10 +42,10 @@ public class SkinsCommand {
         ));
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> cleanCommand(Function2<CommandSourceStack, Player, Integer> cleanFunction,
+    public static ArgumentBuilder<CommandSourceStack, ?> clearCommand(Function2<CommandSourceStack, Player, Integer> clearFunction,
                                                                       Function<CommandContext<CommandSourceStack>, Player> getTarget) {
         return Commands.literal("clear").executes((context) ->
-                cleanFunction.apply(context.getSource(), getTarget.apply(context))
+                clearFunction.apply(context.getSource(), getTarget.apply(context))
         );
     }
 
@@ -55,8 +55,8 @@ public class SkinsCommand {
                         SkinsCommand::setPlayerSkin,
                         (context) -> context.getSource().getPlayerOrException())
                 )
-                .then(cleanCommand(
-                        SkinsCommand::cleanPlayerSkin,
+                .then(clearCommand(
+                        SkinsCommand::clearPlayerSkin,
                         (context) -> context.getSource().getPlayerOrException())
                 )
                 .then(Commands.literal("player")
@@ -66,8 +66,8 @@ public class SkinsCommand {
                                         SkinsCommand::setPlayerSkin,
                                         (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
-                                .then(cleanCommand(
-                                        SkinsCommand::cleanPlayerSkin,
+                                .then(clearCommand(
+                                        SkinsCommand::clearPlayerSkin,
                                         (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
                         )
@@ -78,8 +78,8 @@ public class SkinsCommand {
                         SkinsCommand::setPlayerCape,
                         (context) -> context.getSource().getPlayerOrException())
                 )
-                .then(cleanCommand(
-                        SkinsCommand::cleanPlayerCape,
+                .then(clearCommand(
+                        SkinsCommand::clearPlayerCape,
                         (context) -> context.getSource().getPlayerOrException())
                 )
                 .then(Commands.literal("player")
@@ -89,8 +89,8 @@ public class SkinsCommand {
                                         SkinsCommand::setPlayerCape,
                                         (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
-                                .then(cleanCommand(
-                                        SkinsCommand::cleanPlayerCape,
+                                .then(clearCommand(
+                                        SkinsCommand::clearPlayerCape,
                                         (context) -> EntityArgument.getPlayer(context, "target"))
                                 )
                         )
@@ -174,23 +174,23 @@ public class SkinsCommand {
         return 1;
     }
 
-    private static Integer cleanPlayerSkin(CommandSourceStack source, Entity targetEntity) throws CommandSyntaxException {
+    private static Integer clearPlayerSkin(CommandSourceStack source, Entity targetEntity) throws CommandSyntaxException {
         Player sourcePlayer = (Player) source.getEntityOrException();
         Player targetPlayer = (Player) targetEntity;
         sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.removing")));
         SharedPool.get().execute(() -> {
-            SkinProviderController.GetInstance().cleanPlayerSkin(targetPlayer.getGameProfile());
+            SkinProviderController.GetInstance().clearPlayerSkin(targetPlayer.getGameProfile());
             sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.remove_succeeded")));
         });
         return 1;
     }
 
-    private static Integer cleanPlayerCape(CommandSourceStack source, Entity targetEntity) throws CommandSyntaxException {
+    private static Integer clearPlayerCape(CommandSourceStack source, Entity targetEntity) throws CommandSyntaxException {
         Player sourcePlayer = (Player) source.getEntityOrException();
         Player targetPlayer = (Player) targetEntity;
         sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.removing")));
         SharedPool.get().execute(() -> {
-            SkinProviderController.GetInstance().cleanPlayerCape(targetPlayer.getGameProfile());
+            SkinProviderController.GetInstance().clearPlayerCape(targetPlayer.getGameProfile());
             sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.remove_succeeded")));
         });
         return 1;

@@ -133,15 +133,15 @@ public class SkinProviderController {
         return storePlayerData(model, data, cache, dataType);
     }
 
-    public void cleanPlayerSkin(GameProfile profile) {
-        cleanPlayerData(new PlayerModel(profile), DataType.SKIN);
+    public void clearPlayerSkin(GameProfile profile) {
+        clearPlayerData(new PlayerModel(profile), DataType.SKIN);
     }
 
-    public void cleanPlayerCape(GameProfile profile) {
-        cleanPlayerData(new PlayerModel(profile), DataType.CAPE);
+    public void clearPlayerCape(GameProfile profile) {
+        clearPlayerData(new PlayerModel(profile), DataType.CAPE);
     }
 
-    private void cleanPlayerData(PlayerModel model, DataType dataType) {
+    private void clearPlayerData(PlayerModel model, DataType dataType) {
         deletePlayerDataFromCache(model, dataType);
         if (loadedData.get(dataType).containsKey(model)) {
             loadedData.get(dataType).remove(model);
