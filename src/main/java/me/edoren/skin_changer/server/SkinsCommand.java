@@ -113,24 +113,24 @@ public class SkinsCommand {
     }
 
     private static Integer setPlayerSkinByName(CommandSource sourcePlayer, Player targetPlayer, String playerName) {
-        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Loading skin...")));
+        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.loading")));
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerSkinByName(targetPlayer.getGameProfile(), playerName, true)) {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Could not load the skin")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.load_failed")));
             } else {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Skin loaded successfully")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.load_succeeded")));
             }
         });
         return 1;
     }
 
     private static Integer setPlayerSkinByURL(CommandSource sourcePlayer, Player targetPlayer, URL url) {
-        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Loading skin...")));
+        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.loading")));
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerSkinByURL(targetPlayer.getGameProfile(), url, true)) {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Could not load the skin")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.load_failed")));
             } else {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Skin loaded successfully")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.load_succeeded")));
             }
         });
         return 1;
@@ -151,24 +151,24 @@ public class SkinsCommand {
     }
 
     private static Integer setPlayerCapeByName(CommandSource sourcePlayer, Player targetPlayer, String playerName) {
-        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Loading cape...")));
+        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.loading")));
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerCapeByName(targetPlayer.getGameProfile(), playerName, true)) {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Could not load the cape")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.load_failed")));
             } else {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Cape loaded successfully")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.load_succeeded")));
             }
         });
         return 1;
     }
 
     private static Integer setPlayerCapeByURL(CommandSource sourcePlayer, Player targetPlayer, URL url) {
-        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Loading cape...")));
+        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.loading")));
         SharedPool.get().execute(() -> {
             if (!SkinProviderController.GetInstance().setPlayerCapeByURL(targetPlayer.getGameProfile(), url, true)) {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Could not load the cape")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.load_failed")));
             } else {
-                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Cape loaded successfully")));
+                sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.load_succeeded")));
             }
         });
         return 1;
@@ -177,10 +177,10 @@ public class SkinsCommand {
     private static Integer cleanPlayerSkin(CommandSourceStack source, Entity targetEntity) throws CommandSyntaxException {
         Player sourcePlayer = (Player) source.getEntityOrException();
         Player targetPlayer = (Player) targetEntity;
-        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Removing skin...")));
+        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.removing")));
         SharedPool.get().execute(() -> {
             SkinProviderController.GetInstance().cleanPlayerSkin(targetPlayer.getGameProfile());
-            sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Skin removed successfully")));
+            sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.skin.remove_succeeded")));
         });
         return 1;
     }
@@ -188,10 +188,10 @@ public class SkinsCommand {
     private static Integer cleanPlayerCape(CommandSourceStack source, Entity targetEntity) throws CommandSyntaxException {
         Player sourcePlayer = (Player) source.getEntityOrException();
         Player targetPlayer = (Player) targetEntity;
-        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Removing cape...")));
+        sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.removing")));
         SharedPool.get().execute(() -> {
             SkinProviderController.GetInstance().cleanPlayerCape(targetPlayer.getGameProfile());
-            sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.literal("Cape removed successfully")));
+            sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.remove_succeeded")));
         });
         return 1;
     }
