@@ -1,6 +1,7 @@
 package me.edoren.skin_changer.client;
 
 import com.mojang.authlib.GameProfile;
+import me.edoren.skin_changer.client.api.SkinLoaderService;
 import me.edoren.skin_changer.common.models.PlayerModel;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.PlayerSkin;
@@ -34,7 +35,9 @@ public class ClientASMHooks {
     public static ResourceLocation getRenderTypeSkull(SkullBlock.Type type, GameProfile profile, ResourceLocation result) {
         if (type == SkullBlock.Types.PLAYER && profile != null) {
             ResourceLocation loc = ClientController.GetInstance().getLocationSkin(new PlayerModel(profile));
-            if (loc != null)
+            if (loc == null)
+                SkinLoaderService.GetInstance().requestPlayerSkin(new PlayerModel(profile));
+            else
                 return loc;
         }
         return result;
