@@ -33,6 +33,7 @@ public class SkinProviderController {
     private final Map<DataType, Map<PlayerModel, byte[]>> loadedData = new HashMap<>();
     private final Map<DataType, String> cacheFolders = new HashMap<>();
     private String cacheFile;
+
     private SkinProviderController() {
         providers.put(DataType.SKIN, new ArrayList<>());
         providers.put(DataType.CAPE, new ArrayList<>());
@@ -199,7 +200,7 @@ public class SkinProviderController {
                 Files.write(filePath, bytes);
                 LogManager.getLogger().info("Caching file {}", filePath.toString());
             } catch (IOException e) {
-                e.printStackTrace();
+                LogManager.getLogger().warn("Exception while calling savePlayerDataToCache", e);
             }
         });
     }
@@ -220,7 +221,7 @@ public class SkinProviderController {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LogManager.getLogger().warn("Exception while calling loadPlayerDataFromCache", e);
         }
         return false;
     }
@@ -249,7 +250,7 @@ public class SkinProviderController {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LogManager.getLogger().warn("Exception while calling deletePlayerDataFromCache", e);
             }
         });
     }

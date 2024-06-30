@@ -32,9 +32,8 @@ public class PlayerSkinRequestMessage {
             String uuid = buf.readUtf(bufferSize);
             ret.player = new PlayerModel(name, uuid);
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage: " + e);
+            LogManager.getLogger().error("Exception while reading PlayerSkinUpdateMessage", e);
             ret.messageIsValid = false;
-            e.printStackTrace();
             return ret;
         }
         ret.messageIsValid = true;

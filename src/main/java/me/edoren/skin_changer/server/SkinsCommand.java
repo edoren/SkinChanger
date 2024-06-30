@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@SuppressWarnings("SameReturnValue")
 public class SkinsCommand {
     static final Component ISSUER = Component.literal("SkinChanger");
 
@@ -182,17 +183,17 @@ public class SkinsCommand {
     }
 
     @FunctionalInterface
-    interface Function<T, R> {
+    public interface Function<T, R> {
         R apply(T t) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
-    interface Function2<T, U, R> {
+    public interface Function2<T, U, R> {
         R apply(T t, U u) throws CommandSyntaxException;
     }
 
     @FunctionalInterface
-    interface Function3<T, U, V, R> {
+    public interface Function3<T, U, V, R> {
         R apply(T t, U u, V v) throws CommandSyntaxException;
     }
 }

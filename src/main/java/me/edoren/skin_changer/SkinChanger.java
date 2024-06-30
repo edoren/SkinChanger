@@ -13,6 +13,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Constants.MOD_ID)
 public class SkinChanger {
+    @SuppressWarnings("unused")
     public SkinChanger() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onForgePreInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);

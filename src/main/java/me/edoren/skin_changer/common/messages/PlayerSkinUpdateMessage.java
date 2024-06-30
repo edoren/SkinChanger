@@ -57,9 +57,8 @@ public class PlayerSkinUpdateMessage {
                 ret.playerSkinData.add(new PlayerSkinModel(new PlayerModel(name, uuid), skin, cape));
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage: " + e);
+            LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage", e);
             ret.messageIsValid = false;
-            e.printStackTrace();
             return ret;
         }
         ret.messageIsValid = true;

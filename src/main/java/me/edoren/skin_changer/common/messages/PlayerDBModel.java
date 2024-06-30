@@ -1,5 +1,6 @@
 package me.edoren.skin_changer.common.messages;
 
+@SuppressWarnings("unused")
 public class PlayerDBModel {
     public Data data;
     public Boolean success;

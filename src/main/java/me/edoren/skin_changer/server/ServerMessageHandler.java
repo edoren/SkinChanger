@@ -23,11 +23,11 @@ public class ServerMessageHandler {
         ctx.setPacketHandled(true);
 
         if (sideReceived != LogicalSide.SERVER) {
-            LogManager.getLogger().warn("PlayerSkinRequestMessage received on wrong side:" + ctx.getDirection().getReceptionSide());
+            LogManager.getLogger().warn("PlayerSkinRequestMessage received on wrong side: {}", ctx.getDirection().getReceptionSide());
             return;
         }
         if (!message.isMessageValid()) {
-            LogManager.getLogger().warn("PlayerSkinRequestMessage was invalid" + message.toString());
+            LogManager.getLogger().warn("PlayerSkinRequestMessage was invalid: {}", message);
             return;
         }
 
@@ -57,7 +57,7 @@ public class ServerMessageHandler {
         });
     }
 
-    public static boolean isThisProtocolAcceptedByServer(Channel.VersionTest.Status status, int protocolVersion) {
+    public static boolean isThisProtocolAcceptedByServer(Channel.VersionTest.Status ignoredStatus, int protocolVersion) {
         return NetworkContext.MESSAGE_PROTOCOL_VERSION == protocolVersion;
     }
 }

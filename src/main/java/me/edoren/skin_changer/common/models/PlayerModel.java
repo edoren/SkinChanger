@@ -48,7 +48,7 @@ public class PlayerModel {
         if (obj == null || this.getClass() != obj.getClass())
             return false;
         PlayerModel other = (PlayerModel) obj;
-        return this.uuid.toLowerCase().equals(other.uuid.toLowerCase()) || this.name.toLowerCase().equals(other.name.toLowerCase());
+        return this.uuid.equalsIgnoreCase(other.uuid) || this.name.equalsIgnoreCase(other.name);
     }
 
     @Override

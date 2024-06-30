@@ -8,9 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.SimpleChannel;
-//import net.minecraft.util.ResourceLocation;
-//import net.minecraftforge.fml.network.NetworkRegistry;
-//import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkContext {
     public static final int MESSAGE_PROTOCOL_VERSION = 1;

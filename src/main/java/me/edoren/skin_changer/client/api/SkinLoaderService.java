@@ -86,7 +86,7 @@ public class SkinLoaderService {
                 try {
                     signal.wait(5000);
                 } catch (InterruptedException e) {
-                    LogManager.getLogger().info("Error loading skin for player {}", model);
+                    LogManager.getLogger().info("Error requesting skin for player {}", model);
                 }
                 playerSkinRequests.remove(model);
             }

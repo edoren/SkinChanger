@@ -27,12 +27,12 @@ public class ClientMessageHandler {
         ctx.setPacketHandled(true);
 
         if (sideReceived != LogicalSide.CLIENT) {
-            LogManager.getLogger().warn("PlayerSkinUpdateMessage received on wrong side:" + ctx.getDirection().getReceptionSide());
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage received on wrong side: {}", ctx.getDirection().getReceptionSide());
             return;
         }
 
         if (!message.isMessageValid()) {
-            LogManager.getLogger().warn("PlayerSkinUpdateMessage was invalid" + message);
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage was invalid: {}", message);
             return;
         }
 
@@ -45,7 +45,6 @@ public class ClientMessageHandler {
         }
 
         // This code creates a new task which will be executed by the client during the next tick
-        // In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
         ctx.enqueueWork(() -> // make sure it's only executed on the client
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> processMessage(message))
         );
@@ -64,7 +63,7 @@ public class ClientMessageHandler {
         }
     }
 
-    public static boolean isThisProtocolAcceptedByClient(Channel.VersionTest.Status status, int protocolVersion) {
+    public static boolean isThisProtocolAcceptedByClient(Channel.VersionTest.Status ignoredStatus, int protocolVersion) {
         return NetworkContext.MESSAGE_PROTOCOL_VERSION == protocolVersion;
     }
 }

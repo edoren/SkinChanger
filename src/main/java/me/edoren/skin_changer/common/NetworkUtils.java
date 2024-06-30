@@ -21,7 +21,7 @@ public class NetworkUtils {
             URL url = new URL(resource);
             return downloadFileAsync(url, proxy, maxRetries);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LogManager.getLogger().error("Exception while calling downloadFileAsync", e);
             return CompletableFuture.completedFuture(null);
         }
     }
@@ -35,7 +35,7 @@ public class NetworkUtils {
             URL url = new URL(resource);
             return downloadFile(url, proxy, maxRetries);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LogManager.getLogger().error("Exception while calling downloadFile", e);
             return null;
         }
     }
