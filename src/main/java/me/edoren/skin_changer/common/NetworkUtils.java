@@ -41,7 +41,7 @@ public class NetworkUtils {
     }
 
     public static byte[] downloadFile(URL url, Proxy proxy, int maxRetries) {
-        LogManager.getLogger().info("Downloading file {}", url);
+        LogManager.getLogger().debug("Downloading file {}", url);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (int i = 0; i < maxRetries; i++) {
             try {

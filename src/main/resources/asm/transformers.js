@@ -2,17 +2,9 @@ var ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI');
 var OPCODES = Java.type('org.objectweb.asm.Opcodes');
 
 var methodsData = {
-    "PlayerInfo/getSkinLocation": {
-        "aliases": ["getSkinLocation", "m_105337_"],
-        "desc": "()Lnet/minecraft/resources/ResourceLocation;"
-    },
-    "PlayerInfo/getCapeLocation": {
-        "aliases": ["getCapeLocation", "m_105338_"],
-        "desc": "()Lnet/minecraft/resources/ResourceLocation;"
-    },
-    "PlayerInfo/getModelName": {
-        "aliases": ["getModelName", "m_105336_"],
-        "desc": "()Ljava/lang/String;"
+    "PlayerInfo/getSkin": {
+        "aliases": ["getSkin", "m_293823_"],
+        "desc": "()Lnet/minecraft/client/resources/PlayerSkin;"
     },
     "SkullBlockRenderer/getRenderType": {
         "aliases": ["getRenderType", "m_112523_"],
@@ -27,10 +19,6 @@ var methodsData = {
     "PlayerTabOverlayGui/render": {
         "aliases": ["render", "m_94544_"],
         "desc": "(Lcom/mojang/blaze3d/vertex/PoseStack;ILnet/minecraft/world/scores/Scoreboard;Lnet/minecraft/world/scores/Objective;)V"
-    },
-    "TextureManager/setShaderTexture": {
-        "aliases": ["setShaderTexture", "m_157456_"],
-        "desc": "(Lnet/minecraft/resources/ResourceLocation;)V"
     }
 };
 
@@ -57,7 +45,7 @@ function checkMethod(key, method) {
     return false;
 }
 
-// net/minecraft/client/multiplayer/PlayerInfo/getSkinLocation
+// net/minecraft/client/multiplayer/PlayerInfo/getSkin
 function transformMethod001(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
@@ -68,48 +56,8 @@ function transformMethod001(node) {
             tmp.visitVarInsn(OPCODES.ALOAD, 2);
             tmp.visitMethodInsn(OPCODES.INVOKESTATIC,
                 'me/edoren/skin_changer/client/ClientASMHooks',
-                'getSkinTextureLocation',
-                '(Lnet/minecraft/client/multiplayer/PlayerInfo;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceLocation;',
-                false);
-            i += tmp.instructions.size();
-            node.instructions.insertBefore(insn, tmp.instructions);
-        }
-    }
-}
-
-// net/minecraft/client/multiplayer/PlayerInfo/getCapeLocation
-function transformMethod002(node) {
-    for (var i = 0; i < node.instructions.size(); i++) {
-        var insn = node.instructions.get(i);
-        if (insn.getOpcode() === OPCODES.ARETURN) {
-            var tmp = ASMAPI.getMethodNode();
-            tmp.visitVarInsn(OPCODES.ASTORE, 2);
-            tmp.visitVarInsn(OPCODES.ALOAD, 0);
-            tmp.visitVarInsn(OPCODES.ALOAD, 2);
-            tmp.visitMethodInsn(OPCODES.INVOKESTATIC,
-                'me/edoren/skin_changer/client/ClientASMHooks',
-                'getCloakTextureLocation',
-                '(Lnet/minecraft/client/multiplayer/PlayerInfo;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceLocation;',
-                false);
-            i += tmp.instructions.size();
-            node.instructions.insertBefore(insn, tmp.instructions);
-        }
-    }
-}
-
-// net/minecraft/client/multiplayer/PlayerInfo/getModelName
-function transformMethod003(node) {
-    for (var i = 0; i < node.instructions.size(); i++) {
-        var insn = node.instructions.get(i);
-        if (insn.getOpcode() === OPCODES.ARETURN) {
-            var tmp = ASMAPI.getMethodNode();
-            tmp.visitVarInsn(OPCODES.ASTORE, 2);
-            tmp.visitVarInsn(OPCODES.ALOAD, 0);
-            tmp.visitVarInsn(OPCODES.ALOAD, 2);
-            tmp.visitMethodInsn(OPCODES.INVOKESTATIC,
-                'me/edoren/skin_changer/client/ClientASMHooks',
-                'getModelName',
-                '(Lnet/minecraft/client/multiplayer/PlayerInfo;Ljava/lang/String;)Ljava/lang/String;',
+                'getSkin',
+                '(Lnet/minecraft/client/multiplayer/PlayerInfo;Lnet/minecraft/client/resources/PlayerSkin;)Lnet/minecraft/client/resources/PlayerSkin;',
                 false);
             i += tmp.instructions.size();
             node.instructions.insertBefore(insn, tmp.instructions);
@@ -118,7 +66,7 @@ function transformMethod003(node) {
 }
 
 // net/minecraft/client/renderer/blockentity/SkullBlockRenderer/getRenderType
-function transformMethod004(node) {
+function transformMethod002(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
         if (OPCODES.INVOKESTATIC === insn.getOpcode() &&
@@ -140,7 +88,7 @@ function transformMethod004(node) {
 }
 
 // net/minecraft/client/gui/components/PlayerTabOverlay/render
-function transformMethod005(node) {
+function transformMethod003(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
         if (insn.getOpcode() === OPCODES.ISTORE && insn.var === 12) {
@@ -164,15 +112,9 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
-                    if (checkMethod('PlayerInfo/getSkinLocation', method)) {
+                    if (checkMethod('PlayerInfo/getSkin', method)) {
                         print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
                         transformMethod001(method);
-                    } else if (checkMethod('PlayerInfo/getCapeLocation', method)) {
-                        print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
-                        transformMethod002(method);
-                    } else if (checkMethod('PlayerInfo/getModelName', method)) {
-                        print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
-                        transformMethod003(method);
                     }
                 });
                 return node;
@@ -187,7 +129,7 @@ function initializeCoreMod() {
                 node.methods.forEach(function (method) {
                     if (checkMethod('SkullBlockRenderer/getRenderType', method)) {
                         print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
-                        transformMethod004(method);
+                        transformMethod002(method);
                     }
                 });
                 return node;
@@ -202,7 +144,7 @@ function initializeCoreMod() {
                 node.methods.forEach(function (method) {
                     if (checkMethod('PlayerTabOverlayGui/render', method)) {
                         print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
-                        transformMethod005(method);
+                        transformMethod003(method);
                     }
                 });
                 return node;

@@ -5,6 +5,8 @@ import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.SharedPool;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import me.edoren.skin_changer.common.models.PlayerModel;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.HashMap;
@@ -80,7 +82,8 @@ public class SkinLoaderService {
         playerSkinRequests.put(model, signal);
         SharedPool.execute(() -> {
             PlayerSkinRequestMessage message = new PlayerSkinRequestMessage(model);
-            NetworkContext.GetInstance().getSimpleChannel().sendToServer(message);
+            ClientPacketListener connection = Minecraft.getInstance().getConnection();
+            NetworkContext.GetInstance().getSimpleChannel().send(message, connection.getConnection());
             synchronized (signal) {
                 try {
                     signal.wait(5000);

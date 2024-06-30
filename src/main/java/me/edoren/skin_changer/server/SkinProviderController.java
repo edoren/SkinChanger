@@ -163,7 +163,7 @@ public class SkinProviderController {
         Vector<PlayerSkinModel> playerSkinData = new Vector<>();
         playerSkinData.add(getPlayerSkinData(profile));
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
-        NetworkContext.GetInstance().getSimpleChannel().send(PacketDistributor.PLAYER.with(() -> target), message);
+        NetworkContext.GetInstance().getSimpleChannel().send(message, PacketDistributor.PLAYER.with(target));
     }
 
     private void sendAllDataToTarget(ServerPlayer target) {
@@ -176,14 +176,14 @@ public class SkinProviderController {
         set.forEach((model) -> playerSkinData.add(getPlayerSkinData(model)));
 
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
-        NetworkContext.GetInstance().getSimpleChannel().send(PacketDistributor.PLAYER.with(() -> target), message);
+        NetworkContext.GetInstance().getSimpleChannel().send(message, PacketDistributor.PLAYER.with(target));
     }
 
     private void sendPlayerDataToAll(PlayerModel profile) {
         Vector<PlayerSkinModel> playerSkinData = new Vector<>();
         playerSkinData.add(getPlayerSkinData(profile));
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
-        NetworkContext.GetInstance().getSimpleChannel().send(PacketDistributor.ALL.noArg(), message);
+        NetworkContext.GetInstance().getSimpleChannel().send(message, PacketDistributor.ALL.noArg());
     }
 
     private PlayerSkinModel getPlayerSkinData(PlayerModel profile) {

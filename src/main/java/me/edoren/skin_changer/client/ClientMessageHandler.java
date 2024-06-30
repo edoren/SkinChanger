@@ -7,14 +7,14 @@ import me.edoren.skin_changer.common.models.PlayerSkinModel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.LogicalSidedProvider;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.Channel;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Optional;
 import java.util.Vector;
-import java.util.function.Supplier;
 
 public class ClientMessageHandler {
 
@@ -22,8 +22,7 @@ public class ClientMessageHandler {
      * Called when a message is received of the appropriate type.
      * CALLED BY THE NETWORK THREAD, NOT THE CLIENT THREAD
      */
-    public static void onMessageReceived(final PlayerSkinUpdateMessage message, Supplier<NetworkEvent.Context> ctxSupplier) {
-        NetworkEvent.Context ctx = ctxSupplier.get();
+    public static void onMessageReceived(final PlayerSkinUpdateMessage message, CustomPayloadEvent.Context ctx) {
         LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
         ctx.setPacketHandled(true);
 
@@ -65,7 +64,7 @@ public class ClientMessageHandler {
         }
     }
 
-    public static boolean isThisProtocolAcceptedByClient(String protocolVersion) {
-        return NetworkContext.MESSAGE_PROTOCOL_VERSION.equals(protocolVersion);
+    public static boolean isThisProtocolAcceptedByClient(Channel.VersionTest.Status status, int protocolVersion) {
+        return NetworkContext.MESSAGE_PROTOCOL_VERSION == protocolVersion;
     }
 }

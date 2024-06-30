@@ -1,6 +1,7 @@
 package me.edoren.skin_changer.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.resources.PlayerSkin;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -10,21 +11,21 @@ import java.nio.file.Files;
 
 public class ImageUtils {
 
-    public static String judgeSkinType(byte[] data) {
+    public static PlayerSkin.Model judgeSkinType(byte[] data) {
         try (NativeImage image = NativeImage.read(new ByteArrayInputStream(data))) {
             int w = image.getWidth();
             int h = image.getHeight();
             if (w == h * 2)
-                return "default"; // it's actually "legacy", but there will always be a filter to convert them into "default".
+                return PlayerSkin.Model.WIDE; // it's actually "legacy", but there will always be a filter to convert them into "default".
             if (w == h) {
                 int r = Math.max(w / 64, 1);
                 if (((image.getPixelRGBA(55 * r, 20 * r) & 0xFF000000) >>> 24) == 0)
-                    return "slim";
-                return "default";
+                    return PlayerSkin.Model.SLIM;
+                return PlayerSkin.Model.WIDE;
             }
-            return "unknown";
+            return null;
         } catch (Throwable t) {
-            return "unknown";
+            return null;
         }
     }
 

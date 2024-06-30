@@ -6,12 +6,11 @@ import me.edoren.skin_changer.common.SharedPool;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.Channel;
 import org.apache.logging.log4j.LogManager;
-
-import java.util.function.Supplier;
 
 public class ServerMessageHandler {
 
@@ -19,8 +18,7 @@ public class ServerMessageHandler {
      * Called when a message is received of the appropriate type.
      * CALLED BY THE NETWORK THREAD, NOT THE CLIENT THREAD
      */
-    public static void onMessageReceived(final PlayerSkinRequestMessage message, Supplier<NetworkEvent.Context> ctxSupplier) {
-        NetworkEvent.Context ctx = ctxSupplier.get();
+    public static void onMessageReceived(final PlayerSkinRequestMessage message, CustomPayloadEvent.Context ctx) {
         LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
         ctx.setPacketHandled(true);
 
@@ -59,7 +57,7 @@ public class ServerMessageHandler {
         });
     }
 
-    public static boolean isThisProtocolAcceptedByServer(String protocolVersion) {
-        return NetworkContext.MESSAGE_PROTOCOL_VERSION.equals(protocolVersion);
+    public static boolean isThisProtocolAcceptedByServer(Channel.VersionTest.Status status, int protocolVersion) {
+        return NetworkContext.MESSAGE_PROTOCOL_VERSION == protocolVersion;
     }
 }
