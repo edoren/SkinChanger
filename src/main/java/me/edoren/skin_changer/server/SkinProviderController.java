@@ -28,41 +28,23 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class SkinProviderController {
-    enum DataType {
-        SKIN("skin"),
-        CAPE("cape");
-
-        private final String internal;
-
-        DataType(String envUrl) {
-            this.internal = envUrl;
-        }
-
-        @Override
-        public String toString() {
-            return internal;
-        }
-    }
-
     private static SkinProviderController singleInstance = null;
-
-    private String cacheFile;
     private final Map<DataType, List<ISkinProvider>> providers = new HashMap<>();
     private final Map<DataType, Map<PlayerModel, byte[]>> loadedData = new HashMap<>();
     private final Map<DataType, String> cacheFolders = new HashMap<>();
+    private String cacheFile;
+    private SkinProviderController() {
+        providers.put(DataType.SKIN, new ArrayList<>());
+        providers.put(DataType.CAPE, new ArrayList<>());
+        loadedData.put(DataType.SKIN, new HashMap<>());
+        loadedData.put(DataType.CAPE, new HashMap<>());
+    }
 
     public static SkinProviderController GetInstance() {
         if (singleInstance == null)
             singleInstance = new SkinProviderController();
 
         return singleInstance;
-    }
-
-    private SkinProviderController() {
-        providers.put(DataType.SKIN, new ArrayList<>());
-        providers.put(DataType.CAPE, new ArrayList<>());
-        loadedData.put(DataType.SKIN, new HashMap<>());
-        loadedData.put(DataType.CAPE, new HashMap<>());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -317,6 +299,22 @@ public class SkinProviderController {
             loadedData.get(DataType.SKIN).remove(model);
             loadedData.get(DataType.CAPE).remove(model);
             sendPlayerDataToAll(model);
+        }
+    }
+
+    enum DataType {
+        SKIN("skin"),
+        CAPE("cape");
+
+        private final String internal;
+
+        DataType(String envUrl) {
+            this.internal = envUrl;
+        }
+
+        @Override
+        public String toString() {
+            return internal;
         }
     }
 }

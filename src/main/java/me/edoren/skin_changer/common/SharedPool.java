@@ -7,14 +7,14 @@ import java.util.concurrent.ForkJoinPool;
 public final class SharedPool {
     private static final ExecutorService pool = Executors.newWorkStealingPool(ForkJoinPool.getCommonPoolParallelism() + 1);
 
+    private SharedPool() {
+    }
+
     public static void execute(Runnable command) {
         pool.execute(command);
     }
 
     public static ExecutorService get() {
         return pool;
-    }
-
-    private SharedPool() {
     }
 }

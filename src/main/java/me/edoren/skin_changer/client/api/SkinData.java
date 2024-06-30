@@ -10,17 +10,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SkinData implements ISkin {
+    private final Collection<Consumer<ISkin>> listeners = new CopyOnWriteArrayList<>();
+    private final Collection<Function<ByteBuffer, ByteBuffer>> filters = new CopyOnWriteArrayList<>();
+    private ByteBuffer data;
+    private PlayerSkin.Model type;
+
     public static ByteBuffer toBuffer(byte[] data) {
         ByteBuffer buf = ByteBuffer.allocateDirect(data.length).order(ByteOrder.nativeOrder());
         buf.put(data);
         buf.rewind();
         return buf;
     }
-
-    private ByteBuffer data;
-    private PlayerSkin.Model type;
-    private final Collection<Consumer<ISkin>> listeners = new CopyOnWriteArrayList<>();
-    private final Collection<Function<ByteBuffer, ByteBuffer>> filters = new CopyOnWriteArrayList<>();
 
     @Override
     public ByteBuffer getData() {

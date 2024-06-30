@@ -13,14 +13,14 @@ import java.nio.file.Paths;
 public class ServerController {
     private static ServerController singleInstance = null;
 
+    private ServerController() {
+    }
+
     public static ServerController GetInstance() {
         if (singleInstance == null)
             singleInstance = new ServerController();
 
         return singleInstance;
-    }
-
-    private ServerController() {
     }
 
     public void initialize(MinecraftServer server) {

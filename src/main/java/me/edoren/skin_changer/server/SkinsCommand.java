@@ -18,21 +18,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class SkinsCommand {
-    @FunctionalInterface
-    interface Function<T, R> {
-        R apply(T t) throws CommandSyntaxException;
-    }
-
-    @FunctionalInterface
-    interface Function2<T, U, R> {
-        R apply(T t, U u) throws CommandSyntaxException;
-    }
-
-    @FunctionalInterface
-    interface Function3<T, U, V, R> {
-        R apply(T t, U u, V v) throws CommandSyntaxException;
-    }
-
     static final Component ISSUER = Component.literal("SkinChanger");
 
     public static ArgumentBuilder<CommandSourceStack, ?> setCommand(Function3<CommandSourceStack, Player, String, Integer> setFunction,
@@ -194,5 +179,20 @@ public class SkinsCommand {
             sourcePlayer.sendSystemMessage(Component.translatable("chat.type.announcement", ISSUER, Component.translatable("commands.skin_changer.cape.remove_succeeded")));
         });
         return 1;
+    }
+
+    @FunctionalInterface
+    interface Function<T, R> {
+        R apply(T t) throws CommandSyntaxException;
+    }
+
+    @FunctionalInterface
+    interface Function2<T, U, R> {
+        R apply(T t, U u) throws CommandSyntaxException;
+    }
+
+    @FunctionalInterface
+    interface Function3<T, U, V, R> {
+        R apply(T t, U u, V v) throws CommandSyntaxException;
     }
 }

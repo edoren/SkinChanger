@@ -13,14 +13,6 @@ public class PlayerSkinRequestMessage {
         this.messageIsValid = true;
     }
 
-    public PlayerModel getPlayer() {
-        return player;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
     // for use by the message handler only.
     PlayerSkinRequestMessage() {
         messageIsValid = false;
@@ -47,6 +39,14 @@ public class PlayerSkinRequestMessage {
         }
         ret.messageIsValid = true;
         return ret;
+    }
+
+    public PlayerModel getPlayer() {
+        return player;
+    }
+
+    public boolean isMessageValid() {
+        return messageIsValid;
     }
 
     /**

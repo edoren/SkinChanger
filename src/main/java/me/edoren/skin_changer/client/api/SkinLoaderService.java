@@ -20,14 +20,14 @@ public class SkinLoaderService {
     private final Map<PlayerModel, ISkin> loadedSkins = new HashMap<>();
     private final Map<PlayerModel, ISkin> loadedCapes = new HashMap<>();
 
+    private SkinLoaderService() {
+    }
+
     public static SkinLoaderService GetInstance() {
         if (singleInstance == null)
             singleInstance = new SkinLoaderService();
 
         return singleInstance;
-    }
-
-    private SkinLoaderService() {
     }
 
     public void loadPlayerSkin(PlayerModel model, byte[] data) {

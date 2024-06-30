@@ -16,14 +16,6 @@ public class PlayerSkinUpdateMessage {
         this.messageIsValid = true;
     }
 
-    public Vector<PlayerSkinModel> getAllSkinData() {
-        return playerSkinData;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
     // for use by the message handler only.
     PlayerSkinUpdateMessage() {
         messageIsValid = false;
@@ -72,6 +64,14 @@ public class PlayerSkinUpdateMessage {
         }
         ret.messageIsValid = true;
         return ret;
+    }
+
+    public Vector<PlayerSkinModel> getAllSkinData() {
+        return playerSkinData;
+    }
+
+    public boolean isMessageValid() {
+        return messageIsValid;
     }
 
     /**

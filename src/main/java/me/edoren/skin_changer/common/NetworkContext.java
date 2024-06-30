@@ -13,24 +13,21 @@ import net.minecraftforge.network.SimpleChannel;
 //import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkContext {
-    private static NetworkContext singleInstance = null;
-
     public static final int MESSAGE_PROTOCOL_VERSION = 1;
     public static final ResourceLocation simpleChannelRL = new ResourceLocation(Constants.MOD_ID, "mbechannel");
-
     public static final byte PLAYER_SKIN_UPDATE_MESSAGE_ID = 97;
     public static final byte PLAYER_SKIN_REQUEST_MESSAGE_ID = 98;
-
+    private static NetworkContext singleInstance = null;
     SimpleChannel simpleChannel;
+
+    private NetworkContext() {
+    }
 
     public static NetworkContext GetInstance() {
         if (singleInstance == null)
             singleInstance = new NetworkContext();
 
         return singleInstance;
-    }
-
-    private NetworkContext() {
     }
 
     public void initialize() {

@@ -22,14 +22,14 @@ public class ClientController {
 
     final Map<ByteBuffer, CustomSkinTexture> textures = new WeakHashMap<>();
 
+    private ClientController() {
+    }
+
     public static ClientController GetInstance() {
         if (singleInstance == null)
             singleInstance = new ClientController();
 
         return singleInstance;
-    }
-
-    private ClientController() {
     }
 
     public void initialize() {
