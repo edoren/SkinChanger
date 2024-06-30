@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.Channel;
 import org.apache.logging.log4j.LogManager;
 
@@ -19,13 +18,14 @@ public class ServerMessageHandler {
      * CALLED BY THE NETWORK THREAD, NOT THE CLIENT THREAD
      */
     public static void onMessageReceived(final PlayerSkinRequestMessage message, CustomPayloadEvent.Context ctx) {
-        LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
-        ctx.setPacketHandled(true);
-
-        if (sideReceived != LogicalSide.SERVER) {
-            LogManager.getLogger().warn("PlayerSkinRequestMessage received on wrong side: {}", ctx.getDirection().getReceptionSide());
+        boolean isClientSide = ctx.isClientSide();
+        if (isClientSide) {
+            LogManager.getLogger().warn("PlayerSkinRequestMessage received on wrong side, expected Server");
             return;
         }
+
+        ctx.setPacketHandled(true);
+
         if (!message.isMessageValid()) {
             LogManager.getLogger().warn("PlayerSkinRequestMessage was invalid: {}", message);
             return;

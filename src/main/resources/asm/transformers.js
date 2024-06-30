@@ -8,16 +8,16 @@ var methodsData = {
     },
     "SkullBlockRenderer/getRenderType": {
         "aliases": ["getRenderType", "m_112523_"],
-        "desc": "(Lnet/minecraft/world/level/block/SkullBlock$Type;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/client/renderer/RenderType;"
+        "desc": "(Lnet/minecraft/world/level/block/SkullBlock$Type;Lnet/minecraft/world/item/component/ResolvableProfile;)Lnet/minecraft/client/renderer/RenderType;"
     },
     "RenderType/entityTranslucent": {
         "aliases": ["entityTranslucent", "m_110473_"]
     },
-    "RenderType/entityCutoutNoCull": {
-        "aliases": ["entityCutoutNoCull", "m_110458_"],
+    "RenderType/entityCutoutNoCullZOffset": {
+        "aliases": ["entityCutoutNoCullZOffset"],
     },
     "PlayerTabOverlayGui/render": {
-        "aliases": ["render", "m_94544_"],
+        "aliases": ["render", "m_280406_"],
         "desc": "(Lcom/mojang/blaze3d/vertex/PoseStack;ILnet/minecraft/world/scores/Scoreboard;Lnet/minecraft/world/scores/Objective;)V"
     }
 };
@@ -70,7 +70,7 @@ function transformMethod002(node) {
     for (var i = 0; i < node.instructions.size(); i++) {
         var insn = node.instructions.get(i);
         if (OPCODES.INVOKESTATIC === insn.getOpcode() &&
-            (checkMethod('RenderType/entityTranslucent', insn) || checkMethod('RenderType/entityCutoutNoCull', insn))) {
+            (checkMethod('RenderType/entityTranslucent', insn) || checkMethod('RenderType/entityCutoutNoCullZOffset', insn))) {
             var tmp = ASMAPI.getMethodNode();
             tmp.visitVarInsn(OPCODES.ASTORE, 2);
             tmp.visitVarInsn(OPCODES.ALOAD, 0);
@@ -79,7 +79,7 @@ function transformMethod002(node) {
             tmp.visitMethodInsn(OPCODES.INVOKESTATIC,
                 'me/edoren/skin_changer/client/ClientASMHooks',
                 'getRenderTypeSkull',
-                '(Lnet/minecraft/world/level/block/SkullBlock$Type;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceLocation;',
+                '(Lnet/minecraft/world/level/block/SkullBlock$Type;Lnet/minecraft/world/item/component/ResolvableProfile;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceLocation;',
                 false);
             i += tmp.instructions.size();
             node.instructions.insertBefore(insn, tmp.instructions);
@@ -112,6 +112,7 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
+//                    print("[SkinChanger Debug] PlayerInfo ", method.name);
                     if (checkMethod('PlayerInfo/getSkin', method)) {
                         print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
                         transformMethod001(method);
@@ -127,6 +128,7 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
+//                    print("[SkinChanger Debug] SkullBlockRenderer ", method.name);
                     if (checkMethod('SkullBlockRenderer/getRenderType', method)) {
                         print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
                         transformMethod002(method);
@@ -142,6 +144,7 @@ function initializeCoreMod() {
             },
             'transformer': function (node) {
                 node.methods.forEach(function (method) {
+//                    print("[SkinChanger Debug] PlayerTabOverlay ", method.name);
                     if (checkMethod('PlayerTabOverlayGui/render', method)) {
                         print("[SkinChanger] Fixing method", method.name, "with signature", method.desc);
                         transformMethod003(method);

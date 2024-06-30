@@ -1,10 +1,11 @@
 # Changelog
 
 ## 0.6.2
-- Update to forge 1.20.2-48.1.0
+- Update to forge 1.20.6-50.1.0
 
 ## 0.6.1
 - Added translation files for ES-MX
+- Update to forge 1.20.2-48.1.0
 
 ## 0.6.0
 - Update to forge 1.20-46.0.14

@@ -23,13 +23,13 @@ public class ClientMessageHandler {
      * CALLED BY THE NETWORK THREAD, NOT THE CLIENT THREAD
      */
     public static void onMessageReceived(final PlayerSkinUpdateMessage message, CustomPayloadEvent.Context ctx) {
-        LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
-        ctx.setPacketHandled(true);
-
-        if (sideReceived != LogicalSide.CLIENT) {
-            LogManager.getLogger().warn("PlayerSkinUpdateMessage received on wrong side: {}", ctx.getDirection().getReceptionSide());
+        boolean isServerSide = ctx.isServerSide();
+        if (isServerSide) {
+            LogManager.getLogger().warn("PlayerSkinUpdateMessage received on wrong side, expected Client");
             return;
         }
+
+        ctx.setPacketHandled(true);
 
         if (!message.isMessageValid()) {
             LogManager.getLogger().warn("PlayerSkinUpdateMessage was invalid: {}", message);
@@ -38,7 +38,7 @@ public class ClientMessageHandler {
 
         // We know for sure that this handler is only used on the client side, so it is ok to assume
         // that the ctx handler is a client, and that Minecraft exists.
-        Optional<Level> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(sideReceived);
+        Optional<Level> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.CLIENT);
         if (clientWorld.isEmpty()) {
             LogManager.getLogger().warn("PlayerSkinUpdateMessage context could not provide a Level.");
             return;
