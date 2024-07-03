@@ -21,7 +21,7 @@ build_script:
   - ./gradlew build --stacktrace
 
 artifacts:
-  - path: build\libs\*.jar
+  - path: '*\build\libs\*-*-*.jar'
     name: JarFile
     type: jar
 
