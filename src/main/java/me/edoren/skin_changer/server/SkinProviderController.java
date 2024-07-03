@@ -2,7 +2,6 @@ package me.edoren.skin_changer.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.mojang.authlib.GameProfile;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.NetworkUtils;
@@ -275,10 +274,9 @@ public class SkinProviderController {
     private List<PlayerModel> readCacheFile() throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         FileReader fr = new FileReader(cacheFile);
-        List<PlayerModel> playerModels = gson.fromJson(fr, new TypeToken<List<PlayerModel>>() {
-        }.getType());
+        PlayerModel[] playerModels = gson.fromJson(fr, PlayerModel[].class);
         fr.close();
-        return playerModels != null ? playerModels : new ArrayList<>();
+        return playerModels != null ? Arrays.asList(playerModels) : new ArrayList<>();
     }
 
     private void writeCacheFile(List<PlayerModel> playersCache) throws IOException {
