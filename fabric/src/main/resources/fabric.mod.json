@@ -1,0 +1,31 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${mod_version}",
+    "name": "${mod_name}",
+    "description": "${mod_description}",
+    "authors": [
+        "${mod_authors}"
+    ],
+    "contact": {
+        "sources": "${mod_display_url}"
+    },
+    "license": "${mod_license}",
+    "icon": "assets/skin_changer/logo.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "me.edoren.skin_changer.fabric.SkinChangerFabric"
+        ]
+    },
+    "mixins": [
+        "skin_changer.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${fabric_loader_version}",
+        "minecraft": "~${minecraft_version}",
+        "java": ">=${java_version}",
+        "architectury": ">=${architectury_api_version}",
+        "fabric-api": "*"
+    }
+}
