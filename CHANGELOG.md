@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.2
+- Fix possible NullPointerException when sending network packet
+- Fix issue of SkinProvider being registered multiple times
+
+## 0.5.1
+- Fix possible ClassNotFoundException for gson TypeToken
+
 ## 0.5.0
 - Update to forge 1.19-41.1.0
 
