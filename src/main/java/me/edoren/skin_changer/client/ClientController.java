@@ -9,6 +9,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -31,7 +32,8 @@ public class ClientController {
     }
 
     public void initialize() {
-        MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
+        MinecraftForge.EVENT_BUS.unregister(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public ResourceLocation getLocationCape(PlayerModel model) {
@@ -78,7 +80,8 @@ public class ClientController {
         return textures.get(data);
     }
 
-    private void onClientTickEvent(TickEvent.ClientTickEvent event) {
+    @SubscribeEvent
+    public void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {

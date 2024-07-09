@@ -19,23 +19,13 @@ public class NetworkContext {
 
     public static final byte PLAYER_SKIN_UPDATE_MESSAGE_ID = 97;
     public static final byte PLAYER_SKIN_REQUEST_MESSAGE_ID = 98;
-
-    SimpleChannel simpleChannel;
-
-    public static NetworkContext GetInstance() {
-        if (singleInstance == null)
-            singleInstance = new NetworkContext();
-
-        return singleInstance;
-    }
+    private final SimpleChannel simpleChannel;
 
     private NetworkContext() {
-    }
-
-    public void initialize() {
-        simpleChannel = NetworkRegistry.newSimpleChannel(simpleChannelRL, () -> MESSAGE_PROTOCOL_VERSION,
-                ClientMessageHandler::isThisProtocolAcceptedByClient,
-                ServerMessageHandler::isThisProtocolAcceptedByServer);
+        simpleChannel = NetworkRegistry.ChannelBuilder.named(simpleChannelRL)
+                .networkProtocolVersion(() -> MESSAGE_PROTOCOL_VERSION)
+                .clientAcceptedVersions(ClientMessageHandler::isThisProtocolAcceptedByClient)
+                .serverAcceptedVersions(ServerMessageHandler::isThisProtocolAcceptedByServer).simpleChannel();
 
         simpleChannel.registerMessage(PLAYER_SKIN_UPDATE_MESSAGE_ID, PlayerSkinUpdateMessage.class,
                 PlayerSkinUpdateMessage::encode, PlayerSkinUpdateMessage::decode,
@@ -44,6 +34,13 @@ public class NetworkContext {
         simpleChannel.registerMessage(PLAYER_SKIN_REQUEST_MESSAGE_ID, PlayerSkinRequestMessage.class,
                 PlayerSkinRequestMessage::encode, PlayerSkinRequestMessage::decode,
                 ServerMessageHandler::onMessageReceived);
+    }
+
+    public static NetworkContext GetInstance() {
+        if (singleInstance == null)
+            singleInstance = new NetworkContext();
+
+        return singleInstance;
     }
 
     public SimpleChannel getSimpleChannel() {
