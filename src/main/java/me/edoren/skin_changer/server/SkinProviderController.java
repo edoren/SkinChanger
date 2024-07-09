@@ -2,7 +2,6 @@ package me.edoren.skin_changer.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.mojang.authlib.GameProfile;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.NetworkUtils;
@@ -14,6 +13,7 @@ import me.edoren.skin_changer.server.providers.ISkinProvider;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 
@@ -39,6 +39,8 @@ public class SkinProviderController {
         providers.put(DataType.CAPE, new ArrayList<>());
         loadedData.put(DataType.SKIN, new HashMap<>());
         loadedData.put(DataType.CAPE, new HashMap<>());
+
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static SkinProviderController GetInstance() {
@@ -48,8 +50,7 @@ public class SkinProviderController {
         return singleInstance;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void initialize(File saveFolder) {
+    public void setSaveFolder(File saveFolder) {
         File skinsDir = new File(saveFolder, DataType.SKIN + "s");
         File capesDir = new File(saveFolder, DataType.CAPE + "s");
         skinsDir.mkdirs();
@@ -63,9 +64,14 @@ public class SkinProviderController {
         } catch (IOException ignored) {
         }
         this.cacheFile = cacheFile.getPath();
+    }
 
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogin);
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogout);
+    public void clearCapeProviders() {
+        providers.get(DataType.CAPE).clear();
+    }
+
+    public void clearSkinProviders() {
+        providers.get(DataType.SKIN).clear();
     }
 
     public void registerCapeProvider(ISkinProvider provider) {
@@ -258,10 +264,9 @@ public class SkinProviderController {
     private List<PlayerModel> readCacheFile() throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         FileReader fr = new FileReader(cacheFile);
-        List<PlayerModel> playerModels = gson.fromJson(fr, new TypeToken<List<PlayerModel>>() {
-        }.getType());
+        PlayerModel[] playerModels = gson.fromJson(fr, PlayerModel[].class);
         fr.close();
-        return playerModels != null ? playerModels : new ArrayList<>();
+        return playerModels != null ? new ArrayList(Arrays.asList(playerModels)) : new ArrayList<>();
     }
 
     private void writeCacheFile(List<PlayerModel> playersCache) throws IOException {
@@ -271,7 +276,8 @@ public class SkinProviderController {
         fw.close();
     }
 
-    private void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         GameProfile profile = event.getEntity().getGameProfile();
         LogManager.getLogger().info("Player {} just logged in with id {}", profile.getName(), profile.getId());
@@ -292,7 +298,8 @@ public class SkinProviderController {
         });
     }
 
-    private void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         GameProfile profile = event.getEntity().getGameProfile();
         PlayerModel model = new PlayerModel(profile);
         if (loadedData.get(DataType.SKIN).containsKey(model) || loadedData.get(DataType.CAPE).containsKey(model)) {
