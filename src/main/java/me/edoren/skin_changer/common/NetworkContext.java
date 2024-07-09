@@ -5,6 +5,7 @@ import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.server.ServerMessageHandler;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 //import net.minecraft.util.ResourceLocation;
@@ -33,17 +34,23 @@ public class NetworkContext {
     }
 
     public void initialize() {
-        simpleChannel = NetworkRegistry.newSimpleChannel(simpleChannelRL, () -> MESSAGE_PROTOCOL_VERSION,
-                ClientMessageHandler::isThisProtocolAcceptedByClient,
-                ServerMessageHandler::isThisProtocolAcceptedByServer);
+        simpleChannel = NetworkRegistry.ChannelBuilder.named(simpleChannelRL)
+                .networkProtocolVersion(() -> MESSAGE_PROTOCOL_VERSION)
+                .clientAcceptedVersions(ClientMessageHandler::isThisProtocolAcceptedByClient)
+                .serverAcceptedVersions(ServerMessageHandler::isThisProtocolAcceptedByServer).simpleChannel();
 
-        simpleChannel.registerMessage(PLAYER_SKIN_UPDATE_MESSAGE_ID, PlayerSkinUpdateMessage.class,
-                PlayerSkinUpdateMessage::encode, PlayerSkinUpdateMessage::decode,
-                ClientMessageHandler::onMessageReceived);
+        simpleChannel.messageBuilder(PlayerSkinUpdateMessage.class, PLAYER_SKIN_UPDATE_MESSAGE_ID, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(PlayerSkinUpdateMessage::encode)
+                .decoder(PlayerSkinUpdateMessage::decode)
+                .consumerMainThread(ClientMessageHandler::onMessageReceived)
+                .add();
 
-        simpleChannel.registerMessage(PLAYER_SKIN_REQUEST_MESSAGE_ID, PlayerSkinRequestMessage.class,
-                PlayerSkinRequestMessage::encode, PlayerSkinRequestMessage::decode,
-                ServerMessageHandler::onMessageReceived);
+        simpleChannel.messageBuilder(PlayerSkinRequestMessage.class, PLAYER_SKIN_REQUEST_MESSAGE_ID, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(PlayerSkinRequestMessage::encode)
+                .decoder(PlayerSkinRequestMessage::decode)
+                .consumerMainThread(ServerMessageHandler::onMessageReceived)
+                .add();
+
     }
 
     public SimpleChannel getSimpleChannel() {
