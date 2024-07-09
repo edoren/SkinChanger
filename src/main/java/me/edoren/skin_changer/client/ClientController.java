@@ -29,10 +29,6 @@ public class ClientController {
     }
 
     private ClientController() {
-    }
-
-    public void initialize() {
-        MinecraftForge.EVENT_BUS.unregister(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

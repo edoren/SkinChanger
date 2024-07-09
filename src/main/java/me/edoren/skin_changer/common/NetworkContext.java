@@ -31,9 +31,6 @@ public class NetworkContext {
     }
 
     private NetworkContext() {
-    }
-
-    public void initialize() {
         simpleChannel = NetworkRegistry.ChannelBuilder.named(simpleChannelRL)
                 .networkProtocolVersion(() -> MESSAGE_PROTOCOL_VERSION)
                 .clientAcceptedVersions(ClientMessageHandler::isThisProtocolAcceptedByClient)
@@ -50,7 +47,6 @@ public class NetworkContext {
                 .decoder(PlayerSkinRequestMessage::decode)
                 .consumerMainThread(ServerMessageHandler::onMessageReceived)
                 .add();
-
     }
 
     public SimpleChannel getSimpleChannel() {
