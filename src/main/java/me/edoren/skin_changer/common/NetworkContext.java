@@ -18,16 +18,6 @@ public class NetworkContext {
     SimpleChannel simpleChannel;
 
     private NetworkContext() {
-    }
-
-    public static NetworkContext GetInstance() {
-        if (singleInstance == null)
-            singleInstance = new NetworkContext();
-
-        return singleInstance;
-    }
-
-    public void initialize() {
         simpleChannel = ChannelBuilder.named(simpleChannelRL)
                 .networkProtocolVersion(MESSAGE_PROTOCOL_VERSION)
                 .clientAcceptedVersions(ClientMessageHandler::isThisProtocolAcceptedByClient)
@@ -44,6 +34,13 @@ public class NetworkContext {
                 .decoder(PlayerSkinRequestMessage::decode)
                 .consumerMainThread(ServerMessageHandler::onMessageReceived)
                 .add();
+    }
+
+    public static NetworkContext GetInstance() {
+        if (singleInstance == null)
+            singleInstance = new NetworkContext();
+
+        return singleInstance;
     }
 
     public SimpleChannel getSimpleChannel() {

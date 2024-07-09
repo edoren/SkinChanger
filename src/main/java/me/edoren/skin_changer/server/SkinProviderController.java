@@ -13,6 +13,7 @@ import me.edoren.skin_changer.server.providers.ISkinProvider;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 
@@ -63,8 +64,8 @@ public class SkinProviderController {
         }
         this.cacheFile = cacheFile.getPath();
 
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogin);
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogout);
+        MinecraftForge.EVENT_BUS.unregister(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public void registerCapeProvider(ISkinProvider provider) {
@@ -269,7 +270,8 @@ public class SkinProviderController {
         fw.close();
     }
 
-    private void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         GameProfile profile = event.getEntity().getGameProfile();
         LogManager.getLogger().info("Player {} just logged in with id {}", profile.getName(), profile.getId());
@@ -290,7 +292,8 @@ public class SkinProviderController {
         });
     }
 
-    private void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         GameProfile profile = event.getEntity().getGameProfile();
         PlayerModel model = new PlayerModel(profile);
         if (loadedData.get(DataType.SKIN).containsKey(model) || loadedData.get(DataType.CAPE).containsKey(model)) {
