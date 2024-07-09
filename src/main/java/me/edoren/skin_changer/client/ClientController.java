@@ -11,6 +11,7 @@ import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class ClientController {
     final Map<ByteBuffer, CustomSkinTexture> textures = new WeakHashMap<>();
 
     private ClientController() {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static ClientController GetInstance() {
@@ -30,10 +32,6 @@ public class ClientController {
             singleInstance = new ClientController();
 
         return singleInstance;
-    }
-
-    public void initialize() {
-        MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
     }
 
     public ResourceLocation getLocationCape(PlayerModel model) {
@@ -80,7 +78,8 @@ public class ClientController {
         return textures.get(data);
     }
 
-    private void onClientTickEvent(TickEvent.ClientTickEvent event) {
+    @SubscribeEvent
+    public void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             ClientLevel world = Minecraft.getInstance().level;
             if (world != null) {
