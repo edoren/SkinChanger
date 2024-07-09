@@ -23,13 +23,15 @@ public class ServerController {
         return singleInstance;
     }
 
-    public void initialize(MinecraftServer server) {
+    public void setServer(MinecraftServer server) {
         SkinsCommand.register(server.getFunctions().getDispatcher());
 
         Path savesFolder = server.getWorldPath(LevelResource.ROOT);
         File skinChangerFolder = Paths.get(savesFolder.toString(), Constants.MOD_ID).normalize().toFile();
 
-        SkinProviderController.GetInstance().initialize(skinChangerFolder);
+        SkinProviderController.GetInstance().setSaveFolder(skinChangerFolder);
+        SkinProviderController.GetInstance().clearSkinProviders();
+        SkinProviderController.GetInstance().clearCapeProviders();
         SkinProviderController.GetInstance().registerSkinProvider(new CrafatarSkinProvider());
         SkinProviderController.GetInstance().registerCapeProvider(new CrafatarCapeProvider());
     }

@@ -39,6 +39,8 @@ public class SkinProviderController {
         providers.put(DataType.CAPE, new ArrayList<>());
         loadedData.put(DataType.SKIN, new HashMap<>());
         loadedData.put(DataType.CAPE, new HashMap<>());
+
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static SkinProviderController GetInstance() {
@@ -48,8 +50,7 @@ public class SkinProviderController {
         return singleInstance;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void initialize(File saveFolder) {
+    public void setSaveFolder(File saveFolder) {
         File skinsDir = new File(saveFolder, DataType.SKIN + "s");
         File capesDir = new File(saveFolder, DataType.CAPE + "s");
         skinsDir.mkdirs();
@@ -63,9 +64,14 @@ public class SkinProviderController {
         } catch (IOException ignored) {
         }
         this.cacheFile = cacheFile.getPath();
+    }
 
-        MinecraftForge.EVENT_BUS.unregister(this);
-        MinecraftForge.EVENT_BUS.register(this);
+    public void clearCapeProviders() {
+        providers.get(DataType.CAPE).clear();
+    }
+
+    public void clearSkinProviders() {
+        providers.get(DataType.SKIN).clear();
     }
 
     public void registerCapeProvider(ISkinProvider provider) {
