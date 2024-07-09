@@ -22,18 +22,18 @@ public class SkinChanger {
 
     private void onForgePreInit(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            NetworkContext.GetInstance().initialize();
+            NetworkContext.GetInstance();
         });
     }
 
     private void onClientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ClientController.GetInstance().initialize();
+            ClientController.GetInstance();
         });
     }
 
     @SubscribeEvent
     public void onServerStarted(ServerStartedEvent event) {
-        ServerController.GetInstance().initialize(event.getServer());
+        ServerController.GetInstance().setServer(event.getServer());
     }
 }

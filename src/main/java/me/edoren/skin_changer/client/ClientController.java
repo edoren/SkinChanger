@@ -21,19 +21,15 @@ public class ClientController {
 
     final Map<ByteBuffer, CustomSkinTexture> textures = new WeakHashMap<>();
 
+    private ClientController() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     public static ClientController GetInstance() {
         if (singleInstance == null)
             singleInstance = new ClientController();
 
         return singleInstance;
-    }
-
-    private ClientController() {
-    }
-
-    public void initialize() {
-        MinecraftForge.EVENT_BUS.unregister(this);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public ResourceLocation getLocationCape(PlayerModel model) {

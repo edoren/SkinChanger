@@ -51,6 +51,15 @@ public class SkinProviderController {
     private final Map<DataType, Map<PlayerModel, byte[]>> loadedData = new HashMap<>();
     private final Map<DataType, String> cacheFolders = new HashMap<>();
 
+    private SkinProviderController() {
+        providers.put(DataType.SKIN, new ArrayList<>());
+        providers.put(DataType.CAPE, new ArrayList<>());
+        loadedData.put(DataType.SKIN, new HashMap<>());
+        loadedData.put(DataType.CAPE, new HashMap<>());
+
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     public static SkinProviderController GetInstance() {
         if (singleInstance == null)
             singleInstance = new SkinProviderController();
@@ -58,15 +67,7 @@ public class SkinProviderController {
         return singleInstance;
     }
 
-    private SkinProviderController() {
-        providers.put(DataType.SKIN, new ArrayList<>());
-        providers.put(DataType.CAPE, new ArrayList<>());
-        loadedData.put(DataType.SKIN, new HashMap<>());
-        loadedData.put(DataType.CAPE, new HashMap<>());
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void initialize(File saveFolder) {
+    public void setSaveFolder(File saveFolder) {
         File skinsDir = new File(saveFolder, DataType.SKIN + "s");
         File capesDir = new File(saveFolder, DataType.CAPE + "s");
         skinsDir.mkdirs();
@@ -80,9 +81,14 @@ public class SkinProviderController {
         } catch (IOException ignored) {
         }
         this.cacheFile = cacheFile.getPath();
+    }
 
-        MinecraftForge.EVENT_BUS.unregister(this);
-        MinecraftForge.EVENT_BUS.register(this);
+    public void clearCapeProviders() {
+        providers.get(DataType.CAPE).clear();
+    }
+
+    public void clearSkinProviders() {
+        providers.get(DataType.SKIN).clear();
     }
 
     public void registerCapeProvider(ISkinProvider provider) {
