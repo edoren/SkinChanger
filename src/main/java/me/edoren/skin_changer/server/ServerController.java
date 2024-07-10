@@ -2,6 +2,7 @@ package me.edoren.skin_changer.server;
 
 import me.edoren.skin_changer.server.providers.CrafatarCapeProvider;
 import me.edoren.skin_changer.server.providers.CrafatarSkinProvider;
+import me.edoren.skin_changer.server.providers.MineskinSkinProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 
@@ -32,6 +33,7 @@ public class ServerController {
         SkinProviderController.GetInstance().clearSkinProviders();
         SkinProviderController.GetInstance().clearCapeProviders();
         SkinProviderController.GetInstance().registerSkinProvider(new CrafatarSkinProvider());
+        SkinProviderController.GetInstance().registerSkinProvider(new MineskinSkinProvider());
         SkinProviderController.GetInstance().registerCapeProvider(new CrafatarCapeProvider());
     }
 }
