@@ -3,6 +3,7 @@ package me.edoren.skin_changer.server;
 import me.edoren.skin_changer.common.Constants;
 import me.edoren.skin_changer.server.providers.CrafatarCapeProvider;
 import me.edoren.skin_changer.server.providers.CrafatarSkinProvider;
+import me.edoren.skin_changer.server.providers.MineskinSkinProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 
@@ -24,8 +25,6 @@ public class ServerController {
     }
 
     public void setServer(MinecraftServer server) {
-        SkinsCommand.register(server.getFunctions().getDispatcher());
-
         Path savesFolder = server.getWorldPath(LevelResource.ROOT);
         File skinChangerFolder = Paths.get(savesFolder.toString(), Constants.MOD_ID).normalize().toFile();
 
@@ -33,6 +32,7 @@ public class ServerController {
         SkinProviderController.GetInstance().clearSkinProviders();
         SkinProviderController.GetInstance().clearCapeProviders();
         SkinProviderController.GetInstance().registerSkinProvider(new CrafatarSkinProvider());
+        SkinProviderController.GetInstance().registerSkinProvider(new MineskinSkinProvider());
         SkinProviderController.GetInstance().registerCapeProvider(new CrafatarCapeProvider());
     }
 }
