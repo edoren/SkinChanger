@@ -13,9 +13,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.6.1'
-group = 'me.edoren.skin_changer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'skin_changer'
+version = "$rootProject.mod_version"
+group = "$rootProject.mod_group_id" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "$rootProject.mod_id-$rootProject.minecraft_version"
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
