@@ -14,11 +14,15 @@ out
 .idea
 /logs
 
+# VSCode
+/.vscode
+
 # gradle
 build
 .gradle
 
 # other
+.architectury-transformer
 eclipse
 run
 
