@@ -8,7 +8,6 @@ import me.edoren.skin_changer.common.models.PlayerModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.ByteBuffer;
@@ -50,7 +49,7 @@ public class ClientController {
         return null;
     }
 
-    public PlayerSkin.Model getSkinType(PlayerModel model) {
+    public String getSkinType(PlayerModel model) {
         ResourceLocation location = getLocationSkin(model);
         if (location != null) {
             ISkin skin = SkinLoaderService.GetInstance().getSkin(model);

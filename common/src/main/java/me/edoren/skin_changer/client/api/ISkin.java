@@ -1,7 +1,5 @@
 package me.edoren.skin_changer.client.api;
 
-import net.minecraft.client.resources.PlayerSkin;
-
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -16,7 +14,7 @@ public interface ISkin {
     /**
      * @return "default" for classical 4-pixel arms, "slim" for 3-pixel slim arms, "legacy" for old skin format, "cape" for capes. (note that "legacy" and "cape" are not official things)
      */
-    PlayerSkin.Model getSkinType();
+    String getSkinType();
 
     /**
      * @return true if the ByteBuffer is ready for use.

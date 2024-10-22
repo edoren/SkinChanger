@@ -1,7 +1,5 @@
 package me.edoren.skin_changer.client.api;
 
-import net.minecraft.client.resources.PlayerSkin;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collection;
@@ -13,7 +11,7 @@ public class SkinData implements ISkin {
     private final Collection<Consumer<ISkin>> listeners = new CopyOnWriteArrayList<>();
     private final Collection<Function<ByteBuffer, ByteBuffer>> filters = new CopyOnWriteArrayList<>();
     private ByteBuffer data;
-    private PlayerSkin.Model type;
+    private String type;
 
     public static ByteBuffer toBuffer(byte[] data) {
         ByteBuffer buf = ByteBuffer.allocateDirect(data.length).order(ByteOrder.nativeOrder());
@@ -28,7 +26,7 @@ public class SkinData implements ISkin {
     }
 
     @Override
-    public PlayerSkin.Model getSkinType() {
+    public String getSkinType() {
         return type;
     }
 
@@ -46,7 +44,7 @@ public class SkinData implements ISkin {
         type = null;
     }
 
-    public synchronized void put(byte[] data, PlayerSkin.Model type) {
+    public synchronized void put(byte[] data, String type) {
         ByteBuffer buf = null;
         if (data != null) {
             buf = toBuffer(data);
