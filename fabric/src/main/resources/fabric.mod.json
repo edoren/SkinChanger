@@ -27,5 +27,12 @@
         "java": ">=${java_version}",
         "architectury": ">=${architectury_api_version}",
         "fabric-api": "*"
+    },
+    "custom": {
+        "mc-publish": {
+            "dependencies": [
+                "architectury-api(required){modrinth:lhGA9TYQ}{curseforge:419699}"
+            ]
+        }
     }
 }
