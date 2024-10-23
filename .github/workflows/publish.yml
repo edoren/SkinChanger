@@ -45,21 +45,20 @@ jobs:
       - name: Publish (CurseForge/Modrinth/GitHub)
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
-      #     curseforge-id: 378549
-      #     curseforge-token: "${{ secrets.CURSEFORGE_TOKEN }}"
+          curseforge-id: 378549
+          curseforge-token: "${{ secrets.CURSEFORGE_TOKEN }}"
 
-      #     modrinth-id: 1q2w3e4r
-      #     modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
+          modrinth-id: 5jVtTQGY
+          modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
 
           github-generate-changelog: true
 
           github-tag: "v${{ inputs.mod_version }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-          name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+          name: "skin_changer-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
           version: "${{ inputs.mod_version }}"
           version-type: release
-          changelog-file: CHANGELOG.md
  
           files: |
             "*/build/libs/skin_changer-@(fabric|forge|neoforge|quilt|rift)-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
