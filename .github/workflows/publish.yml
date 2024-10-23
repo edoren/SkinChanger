@@ -3,15 +3,6 @@ name: Publish on GitHub, CurseForge & Modrinth
 on:
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: "Log level"
-        required: true
-        default: "warning"
-        type: choice
-        options:
-          - info
-          - warning
-          - debug
       mod_version:
         description: "The version of the mod"
         type: string
