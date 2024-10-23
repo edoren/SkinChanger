@@ -16,14 +16,14 @@ authors = "${mod_authors}"
 description = '''${mod_description}'''
 displayTest = "MATCH_VERSION"          # MATCH_VERSION is the default if nothing is specified )
 
-[[dependencies.${mod_id}]]
+[[dependencies.skin_changer]]
 modId = "forge"
 mandatory = true
 versionRange = "${forge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.skin_changer]]
 modId = "minecraft"
 mandatory = true
 versionRange = "${minecraft_version_range}"
@@ -36,3 +36,6 @@ mandatory = true
 versionRange = "${architectury_version_range}"
 ordering = "AFTER"
 side = "BOTH"
+
+[mc-publish]
+dependencies = ["architectury-api(required){modrinth:lhGA9TYQ}{curseforge:419699}"]
