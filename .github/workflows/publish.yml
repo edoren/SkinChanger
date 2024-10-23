@@ -1,0 +1,73 @@
+name: Publish on GitHub, CurseForge & Modrinth
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      mod_version:
+        description: "The version of the mod"
+        type: string
+        required: true
+      minecraft_version:
+        description: "Minecraft Version"
+        type: string
+        required: true
+      java_version:
+        description: "Java Version"
+        type: number
+        default: 21
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: 21
+
+      - name: Make Gradle Wrapper Executable
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
+
+      - name: Build
+        run: ./gradlew clean build
+
+      # - name: Publish (CurseForge/Modrinth/GitHub)
+      #   uses: Kir-Antipov/mc-publish@v3.3.0
+      #   with:
+      #     curseforge-id: 378549
+      #     curseforge-token: "${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}"
+
+      #     modrinth-id: 1q2w3e4r
+      #     modrinth-token: "${{ secrets.PUBLISH_MODRINTH_TOKEN }}"
+
+      #     github-tag: "v${{ inputs.mod_version }}"
+      #     github-token: "${{ secrets.PUBLISH_GITHUB_TOKEN }}"
+
+      #     name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+      #     version: "${{ inputs.mod_version }}"
+      #     version-type: release
+      #     changelog-file: CHANGELOG.md
+
+      #     loaders: fabric
+      #     game-versions: "${{ inputs.minecraft_version }}"
+      #     java: "${{ inputs.java_version }}"
