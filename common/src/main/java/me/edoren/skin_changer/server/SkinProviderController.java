@@ -264,7 +264,7 @@ public class SkinProviderController {
         FileReader fr = new FileReader(cacheFile);
         PlayerModel[] playerModels = gson.fromJson(fr, PlayerModel[].class);
         fr.close();
-        return playerModels != null ? new ArrayList(Arrays.asList(playerModels)) : new ArrayList<>();
+        return playerModels != null ? new ArrayList<>(Arrays.asList(playerModels)) : new ArrayList<>();
     }
 
     private void writeCacheFile(List<PlayerModel> playersCache) throws IOException {
