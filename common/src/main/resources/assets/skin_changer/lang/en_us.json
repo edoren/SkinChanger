@@ -1,0 +1,12 @@
+{
+  "commands.skin_changer.skin.loading": "Loading skin...",
+  "commands.skin_changer.skin.load_failed": "Could not load the skin",
+  "commands.skin_changer.skin.load_succeeded": "Skin loaded successfully",
+  "commands.skin_changer.skin.removing": "Removing skin...",
+  "commands.skin_changer.skin.remove_succeeded": "Skin removed successfully",
+  "commands.skin_changer.cape.loading": "Loading cape...",
+  "commands.skin_changer.cape.load_failed": "Could not load the cape",
+  "commands.skin_changer.cape.load_succeeded": "Cape loaded successfully",
+  "commands.skin_changer.cape.removing": "Removing cape...",
+  "commands.skin_changer.cape.remove_succeeded": "Cape removed successfully"
+}

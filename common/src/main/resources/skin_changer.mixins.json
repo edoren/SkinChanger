@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "package": "me.edoren.skin_changer.client.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "minVersion": "0.8",
+    "client": [
+        "PlayerInfoMixin",
+        "PlayerTabOverlayMixin",
+        "SkullBlockRendererMixin"
+    ],
+    "mixins": [],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
