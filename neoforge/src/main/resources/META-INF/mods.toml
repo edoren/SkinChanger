@@ -16,21 +16,21 @@ authors = "${mod_authors}"
 description = '''${mod_description}'''
 displayTest = "MATCH_VERSION"          # MATCH_VERSION is the default if nothing is specified )
 
-[[dependencies.${mod_id}]]
+[[dependencies.skin_changer]]
 modId = "neoforge"
 type = "required"
 versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.skin_changer]]
 modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.skin_changer]]
 modId = "architectury"
 type = "required"
 versionRange = "${architectury_version_range}"
@@ -39,3 +39,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "skin_changer.mixins.json"
+
+[mc-publish]
+dependencies = ["architectury-api(required){modrinth:lhGA9TYQ}{curseforge:419699}"]
