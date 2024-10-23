@@ -42,7 +42,7 @@ public class ServerMessageHandler {
         // This code creates a new task which will be executed by the server during the next tick,
         //  In this case, the task is to call messageHandlerOnServer.processMessage(message, sendingPlayer)
         ctx.queue(() -> // make sure it's only executed on the physical client
-                processMessage(message, sendingPlayer)
+            processMessage(message, sendingPlayer)
         );
     }
 

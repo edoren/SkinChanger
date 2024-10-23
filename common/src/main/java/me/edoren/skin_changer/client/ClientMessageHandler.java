@@ -30,17 +30,9 @@ public class ClientMessageHandler {
             return;
         }
 
-        // We know for sure that this handler is only used on the client side, so it is ok to assume
-        // that the ctx handler is a client, and that Minecraft exists.
-//        Optional<Level> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(sideReceived);
-//        if (clientWorld.isEmpty()) {
-//            LogManager.getLogger().warn("PlayerSkinUpdateMessage context could not provide a Level.");
-//            return;
-//        }
-
         // This code creates a new task which will be executed by the client during the next tick
         ctx.queue(() -> // make sure it's only executed on the client
-                processMessage(message)
+            processMessage(message)
         );
     }
 

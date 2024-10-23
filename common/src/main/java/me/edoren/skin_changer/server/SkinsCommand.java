@@ -24,63 +24,63 @@ public class SkinsCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> setCommand(Function3<CommandSourceStack, Player, String, Integer> setFunction,
                                                                     Function<CommandContext<CommandSourceStack>, Player> getTarget) {
         return Commands.literal("set").then(Commands.argument("arg", MessageArgument.message()).executes((context) ->
-                setFunction.apply(context.getSource(), getTarget.apply(context), MessageArgument.getMessage(context, "arg").getString())
+            setFunction.apply(context.getSource(), getTarget.apply(context), MessageArgument.getMessage(context, "arg").getString())
         ));
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> clearCommand(Function2<CommandSourceStack, Player, Integer> clearFunction,
                                                                       Function<CommandContext<CommandSourceStack>, Player> getTarget) {
         return Commands.literal("clear").executes((context) ->
-                clearFunction.apply(context.getSource(), getTarget.apply(context))
+            clearFunction.apply(context.getSource(), getTarget.apply(context))
         );
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("skin")
-                .then(setCommand(
+            .then(setCommand(
+                SkinsCommand::setPlayerSkin,
+                (context) -> context.getSource().getPlayerOrException())
+            )
+            .then(clearCommand(
+                SkinsCommand::clearPlayerSkin,
+                (context) -> context.getSource().getPlayerOrException())
+            )
+            .then(Commands.literal("player")
+                .requires((player) -> player.hasPermission(2))
+                .then(Commands.argument("target", EntityArgument.player())
+                    .then(setCommand(
                         SkinsCommand::setPlayerSkin,
-                        (context) -> context.getSource().getPlayerOrException())
-                )
-                .then(clearCommand(
+                        (context) -> EntityArgument.getPlayer(context, "target"))
+                    )
+                    .then(clearCommand(
                         SkinsCommand::clearPlayerSkin,
-                        (context) -> context.getSource().getPlayerOrException())
+                        (context) -> EntityArgument.getPlayer(context, "target"))
+                    )
                 )
-                .then(Commands.literal("player")
-                        .requires((player) -> player.hasPermission(2))
-                        .then(Commands.argument("target", EntityArgument.player())
-                                .then(setCommand(
-                                        SkinsCommand::setPlayerSkin,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
-                                )
-                                .then(clearCommand(
-                                        SkinsCommand::clearPlayerSkin,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
-                                )
-                        )
-                )
+            )
         );
         dispatcher.register(Commands.literal("cape")
-                .then(setCommand(
+            .then(setCommand(
+                SkinsCommand::setPlayerCape,
+                (context) -> context.getSource().getPlayerOrException())
+            )
+            .then(clearCommand(
+                SkinsCommand::clearPlayerCape,
+                (context) -> context.getSource().getPlayerOrException())
+            )
+            .then(Commands.literal("player")
+                .requires((player) -> player.hasPermission(2))
+                .then(Commands.argument("target", EntityArgument.player())
+                    .then(setCommand(
                         SkinsCommand::setPlayerCape,
-                        (context) -> context.getSource().getPlayerOrException())
-                )
-                .then(clearCommand(
+                        (context) -> EntityArgument.getPlayer(context, "target"))
+                    )
+                    .then(clearCommand(
                         SkinsCommand::clearPlayerCape,
-                        (context) -> context.getSource().getPlayerOrException())
+                        (context) -> EntityArgument.getPlayer(context, "target"))
+                    )
                 )
-                .then(Commands.literal("player")
-                        .requires((player) -> player.hasPermission(2))
-                        .then(Commands.argument("target", EntityArgument.player())
-                                .then(setCommand(
-                                        SkinsCommand::setPlayerCape,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
-                                )
-                                .then(clearCommand(
-                                        SkinsCommand::clearPlayerCape,
-                                        (context) -> EntityArgument.getPlayer(context, "target"))
-                                )
-                        )
-                )
+            )
         );
     }
 

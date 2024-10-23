@@ -7,8 +7,6 @@ import dev.architectury.utils.Env;
 import me.edoren.skin_changer.client.ClientController;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.server.ServerController;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 
