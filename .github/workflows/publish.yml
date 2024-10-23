@@ -58,7 +58,11 @@ jobs:
           version: "${{ inputs.mod_version }}"
           version-type: release
           changelog-file: CHANGELOG.md
+ 
+          files: "*/build/libs/skin_changer-*-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
-          loaders: fabric
+          loaders: |
+            fabric
+            neoforge
           game-versions: "${{ inputs.minecraft_version }}"
           java: "${{ inputs.java_version }}"
