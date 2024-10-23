@@ -41,7 +41,7 @@ dependencies {
     shadowBundle project(path: ":common", configuration: "transformProductionNeoForge")
 }
 
-def resourceTargets = ["META-INF/mods.toml", "pack.mcmeta"]
+def resourceTargets = ["META-INF/neoforge.mods.toml", "pack.mcmeta"]
 def replaceProperties = [
         java_version                 : java_version,
         minecraft_version            : minecraft_version,
