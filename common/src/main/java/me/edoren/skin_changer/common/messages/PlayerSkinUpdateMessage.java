@@ -1,36 +1,51 @@
 package me.edoren.skin_changer.common.messages;
 
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
+import me.edoren.skin_changer.common.Constants;
 import me.edoren.skin_changer.common.models.PlayerModel;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Vector;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
-public class PlayerSkinUpdateMessage {
-    private Vector<PlayerSkinModel> playerSkinData;
-    private boolean messageIsValid;
+public class PlayerSkinUpdateMessage implements CustomPacketPayload {
+    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "player_skin_update_message");
+    private static final CustomPacketPayload.Type<PlayerSkinUpdateMessage> TYPE = new CustomPacketPayload.Type<>(ID);
+    private static final StreamCodec<RegistryFriendlyByteBuf, PlayerSkinUpdateMessage> CODEC = CustomPacketPayload.codec(PlayerSkinUpdateMessage::encode, PlayerSkinUpdateMessage::new);
+
+    private final Vector<PlayerSkinModel> playerSkinData;
+
+    public static void register(BiConsumer<PlayerSkinUpdateMessage, Supplier<NetworkManager.PacketContext>> messageConsumer) {
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            NetworkManager.NetworkReceiver<PlayerSkinUpdateMessage> receiver = (packet, context) -> {
+                messageConsumer.accept(packet, () -> {
+                    return context;
+                });
+            };
+            NetworkManager.registerReceiver(NetworkManager.s2c(), TYPE, CODEC, receiver);
+        } else {
+            NetworkManager.registerS2CPayloadType(TYPE, CODEC);
+        }
+    }
 
     public PlayerSkinUpdateMessage(Vector<PlayerSkinModel> playerSkinData) {
         this.playerSkinData = playerSkinData;
-        this.messageIsValid = true;
     }
 
-    // for use by the message handler only.
-    PlayerSkinUpdateMessage() {
-        messageIsValid = false;
-    }
-
-    /**
-     * Called by the network code once it has received the message bytes over the network.
-     * Used to read the ByteBuf contents into your member variables
-     */
-    public static PlayerSkinUpdateMessage decode(FriendlyByteBuf buf) {
-        PlayerSkinUpdateMessage ret = new PlayerSkinUpdateMessage();
+    public PlayerSkinUpdateMessage(RegistryFriendlyByteBuf buf) {
+        Vector<PlayerSkinModel> playerSkinData = new Vector<>();
         try {
             int size = buf.readInt();
-            ret.playerSkinData = new Vector<>();
-            ret.playerSkinData.ensureCapacity(size);
+            playerSkinData.ensureCapacity(size);
             for (int i = 0; i != size; i++) {
                 int bufferSize;
 
@@ -54,36 +69,31 @@ public class PlayerSkinUpdateMessage {
                     buf.readBytes(cape);
                 }
 
-                ret.playerSkinData.add(new PlayerSkinModel(new PlayerModel(name, uuid), skin, cape));
+                playerSkinData.add(new PlayerSkinModel(new PlayerModel(name, uuid), skin, cape));
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             LogManager.getLogger().warn("Exception while reading PlayerSkinUpdateMessage", e);
-            ret.messageIsValid = false;
-            return ret;
+            playerSkinData = null;
         }
-        ret.messageIsValid = true;
-        return ret;
+
+        this.playerSkinData = playerSkinData;
     }
 
     public Vector<PlayerSkinModel> getAllSkinData() {
-        return playerSkinData;
+        return this.playerSkinData;
     }
 
     public boolean isMessageValid() {
-        return messageIsValid;
+        return this.playerSkinData != null;
     }
 
-    /**
-     * Called by the network code.
-     * Used to write the contents of your message member variables into the ByteBuf, ready for transmission over the network.
-     */
-    public void encode(FriendlyByteBuf buf) {
-        if (!messageIsValid) return;
-        buf.writeInt(playerSkinData.size());
-        for (int i = 0; i != playerSkinData.size(); i++) {
+    public void encode(RegistryFriendlyByteBuf buf) {
+        if (this.playerSkinData == null) return;
+        buf.writeInt(this.playerSkinData.size());
+        for (int i = 0; i != this.playerSkinData.size(); i++) {
             int bufferSize;
 
-            PlayerSkinModel player = playerSkinData.get(i);
+            PlayerSkinModel player = this.playerSkinData.get(i);
 
             buf.writeInt(player.getPlayer().getName().length());
             buf.writeUtf(player.getPlayer().getName());
@@ -101,5 +111,10 @@ public class PlayerSkinUpdateMessage {
             if (bufferSize > 0)
                 buf.writeBytes(player.getCape());
         }
+    }
+
+    @Override
+    public @NotNull CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

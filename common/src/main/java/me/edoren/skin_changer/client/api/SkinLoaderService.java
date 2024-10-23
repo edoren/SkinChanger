@@ -80,7 +80,7 @@ public class SkinLoaderService {
         playerSkinRequests.put(model, signal);
         SharedPool.execute(() -> {
             PlayerSkinRequestMessage message = new PlayerSkinRequestMessage(model);
-            NetworkContext.GetInstance().getSimpleChannel().sendToServer(message);
+            NetworkContext.GetInstance().sendToServer(message);
             synchronized (signal) {
                 try {
                     signal.wait(5000);

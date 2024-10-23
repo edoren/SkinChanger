@@ -93,6 +93,6 @@ public class ClientController {
 
 
     private ResourceLocation generateRandomLocation() {
-        return new ResourceLocation(Constants.MOD_ID, String.format("textures/generated/%s", UUID.randomUUID()));
+        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, String.format("textures/generated/%s", UUID.randomUUID()));
     }
 }

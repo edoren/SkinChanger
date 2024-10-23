@@ -147,7 +147,7 @@ public class SkinProviderController {
         Vector<PlayerSkinModel> playerSkinData = new Vector<>();
         playerSkinData.add(getPlayerSkinData(profile));
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
-        NetworkContext.GetInstance().getSimpleChannel().sendToPlayer(target, message);
+        NetworkContext.GetInstance().sendToPlayer(target, message);
     }
 
     private void sendAllDataToTarget(ServerPlayer target) {
@@ -160,7 +160,7 @@ public class SkinProviderController {
         set.forEach((model) -> playerSkinData.add(getPlayerSkinData(model)));
 
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
-        NetworkContext.GetInstance().getSimpleChannel().sendToPlayer(target, message);
+        NetworkContext.GetInstance().sendToPlayer(target, message);
     }
 
     private void sendPlayerDataToAll(PlayerModel profile) {
@@ -169,7 +169,7 @@ public class SkinProviderController {
         PlayerSkinUpdateMessage message = new PlayerSkinUpdateMessage(playerSkinData);
         MinecraftServer server = GameInstance.getServer();
         if (server != null) {
-            NetworkContext.GetInstance().getSimpleChannel().sendToPlayers(server.getPlayerList().getPlayers(), message);
+            NetworkContext.GetInstance().sendToPlayers(server.getPlayerList().getPlayers(), message);
         }
     }
 

@@ -1,19 +1,17 @@
 package me.edoren.skin_changer.common;
 
-import dev.architectury.networking.NetworkChannel;
+import dev.architectury.networking.NetworkManager;
 import me.edoren.skin_changer.client.ClientMessageHandler;
 import me.edoren.skin_changer.common.messages.PlayerSkinRequestMessage;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.server.ServerMessageHandler;
-import net.minecraft.resources.ResourceLocation;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkContext {
-    public static final int MESSAGE_PROTOCOL_VERSION = 1;
-    public static final ResourceLocation simpleChannelRL = new ResourceLocation(Constants.MOD_ID, "mbechannel");
-    public static final byte PLAYER_SKIN_UPDATE_MESSAGE_ID = 97;
-    public static final byte PLAYER_SKIN_REQUEST_MESSAGE_ID = 98;
     private static NetworkContext singleInstance = null;
-    NetworkChannel simpleChannel = null;
 
     private NetworkContext() {
     }
@@ -25,21 +23,22 @@ public class NetworkContext {
         return singleInstance;
     }
 
-    public void initialize() {
-        this.simpleChannel = NetworkChannel.create(simpleChannelRL);
-
-        this.simpleChannel.register(PlayerSkinUpdateMessage.class,
-                PlayerSkinUpdateMessage::encode,
-                PlayerSkinUpdateMessage::decode,
-                ClientMessageHandler::onMessageReceived);
-
-        this.simpleChannel.register(PlayerSkinRequestMessage.class,
-                PlayerSkinRequestMessage::encode,
-                PlayerSkinRequestMessage::decode,
-                ServerMessageHandler::onMessageReceived);
+    public <T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload) {
+        NetworkManager.sendToPlayer(player, payload);
     }
 
-    public NetworkChannel getSimpleChannel() {
-        return simpleChannel;
+    public <T extends CustomPacketPayload> void sendToPlayers(Iterable<ServerPlayer> players, T payload) {
+        NetworkManager.sendToPlayers(players, payload);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public <T extends CustomPacketPayload> void sendToServer(T payload) {
+        NetworkManager.sendToServer(payload);
+    }
+
+    public void initialize() {
+        PlayerSkinUpdateMessage.register(ClientMessageHandler::onMessageReceived);
+        PlayerSkinRequestMessage.register(ServerMessageHandler::onMessageReceived);
+
     }
 }
