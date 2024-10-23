@@ -42,23 +42,23 @@ jobs:
       - name: Build
         run: ./gradlew clean build
 
-      # - name: Publish (CurseForge/Modrinth/GitHub)
-      #   uses: Kir-Antipov/mc-publish@v3.3.0
-      #   with:
+      - name: Publish (CurseForge/Modrinth/GitHub)
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
       #     curseforge-id: 378549
-      #     curseforge-token: "${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}"
+      #     curseforge-token: "${{ secrets.CURSEFORGE_TOKEN }}"
 
       #     modrinth-id: 1q2w3e4r
-      #     modrinth-token: "${{ secrets.PUBLISH_MODRINTH_TOKEN }}"
+      #     modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
 
-      #     github-tag: "v${{ inputs.mod_version }}"
-      #     github-token: "${{ secrets.PUBLISH_GITHUB_TOKEN }}"
+          github-tag: "v${{ inputs.mod_version }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      #     name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
-      #     version: "${{ inputs.mod_version }}"
-      #     version-type: release
-      #     changelog-file: CHANGELOG.md
+          name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+          version: "${{ inputs.mod_version }}"
+          version-type: release
+          changelog-file: CHANGELOG.md
 
-      #     loaders: fabric
-      #     game-versions: "${{ inputs.minecraft_version }}"
-      #     java: "${{ inputs.java_version }}"
+          loaders: fabric
+          game-versions: "${{ inputs.minecraft_version }}"
+          java: "${{ inputs.java_version }}"
