@@ -61,7 +61,7 @@ jobs:
           version-type: release
  
           files: |
-            "**/skin_changer-@(fabric|forge|neoforge|quilt|rift)-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+            "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
           loaders: |
             fabric
