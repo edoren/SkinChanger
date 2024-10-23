@@ -51,6 +51,8 @@ jobs:
       #     modrinth-id: 1q2w3e4r
       #     modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
 
+          github-generate-changelog: true
+
           github-tag: "v${{ inputs.mod_version }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -59,7 +61,8 @@ jobs:
           version-type: release
           changelog-file: CHANGELOG.md
  
-          files: "*/build/libs/skin_changer-*-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+          files: |
+            "*/build/libs/skin_changer-@(fabric|forge|neoforge|quilt|rift)-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
           loaders: |
             fabric
