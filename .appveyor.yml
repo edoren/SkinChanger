@@ -17,13 +17,16 @@ install:
   - cmd: set PATH=%JAVA_HOME%;%PATH%
 
 build_script:
-  - java -version
+  - '"%JAVA_HOME%\bin\java" -version'
   - ./gradlew build --stacktrace
 
-artifacts:
-  - path: build\libs\*.jar
-    name: JarFile
-    type: jar
+after_build:
+  - ps: Get-ChildItem '*\build\libs\*.jar' | Where-Object { $_.Name -match 'skin_changer-(forge|fabric|neoforge)-\d+\.\d+\.\d+-\d+\.\d+\.\d+\.jar' } | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+# artifacts:
+#   - path: '*\build\libs\*-*-*-*.jar'
+#     name: JarFiles
+#     type: jar
 
 deploy:
   tag: $(APPVEYOR_REPO_TAG_NAME)
@@ -34,7 +37,6 @@ deploy:
     https://ci.appveyor.com/project/edoren/skinchanger/builds/$(APPVEYOR_BUILD_ID)
   auth_token:
     secure: CUMGrcXXT61POImC1+LWfdlw7oK50lJB6xMHhPu8XR9j1pyjxgI2buqhJohS4DpC
-  artifact: /.*\.(jar)/
   force_update: true
   on:
     # https://www.appveyor.com/docs/deployment/#deploy-on-tag-github-and-gitlab-only
