@@ -50,7 +50,7 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "Release v${{ inputs.minecraft_version }} for ${{ inputs.mod_version }}"
+                  name: "Release v${{ inputs.mod_version }} for Minecraft ${{ inputs.minecraft_version }}"
                   version: "${{ inputs.mod_version }}"
                   version-type: release
 
