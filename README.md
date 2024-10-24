@@ -39,4 +39,4 @@ https://github.com/edoren/SkinChanger/pulls
 
 ## Donate
 If you like this project and want to support it's developement please consider to donate.  
-[![Donate with PayPal](https://freepngimg.com/save/15064-paypal-donate-button-picture/284x136)](https://www.paypal.com/donate?hosted_button_id=H6X6Y6QV22R7S)
+<a href='https://ko-fi.com/W7W4154UTE' target='_blank'><img height='36' style='border:0px;height:36px' src='https://storage.ko-fi.com/cdn/kofi5.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
