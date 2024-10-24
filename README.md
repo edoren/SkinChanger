@@ -1,4 +1,4 @@
-# SkinChanger Mod [![Build Status](https://ci.appveyor.com/api/projects/status/bgc7i8q6dhv1ee0x/branch/master?svg=true&pendingText=PENDING&passingText=PASSING&failingText=FAILING)](https://ci.appveyor.com/project/edoren/skinchanger/branch/master)
+# SkinChanger Mod<br>[![Build Status](https://github.com/edoren/SkinChanger/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/edoren/SkinChanger/actions/workflows/continuous_integration.yml)
 
 ## Description
 This mod allows you to change your Minecraft server skin on the fly even if it is in offline mode.
