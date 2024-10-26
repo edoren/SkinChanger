@@ -50,6 +50,7 @@ jobs:
               with:
                   github-tag: "v${{ inputs.mod_version }}"
                   github-token: "${{ secrets.GITHUB_TOKEN }}"
+                  github-commitish: ${{ github.sha }}
 
                   github-generate-changelog: true
 
