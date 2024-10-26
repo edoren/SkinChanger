@@ -1,0 +1,100 @@
+name: Publish on GitHub, CurseForge & Modrinth
+
+on:
+    workflow_dispatch:
+        inputs:
+            mod_version:
+                description: "The version of the mod"
+                type: string
+                required: true
+            minecraft_version:
+                description: "Minecraft Version"
+                type: string
+                required: true
+            java_version:
+                description: "Java Version"
+                type: choice
+                options:
+                - "21"
+                - "17"
+                default: "21"
+                required: true
+
+permissions:
+    contents: write
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v3
+              with:
+                  submodules: true
+
+            - name: Setup Java
+              uses: actions/setup-java@v2
+              with:
+                  distribution: "temurin"
+                  java-version: ${{ inputs.java_version }}
+
+            - name: Make Gradle Wrapper Executable
+              if: ${{ runner.os != 'Windows' }}
+              run: chmod +x ./gradlew
+
+            - name: Build
+              run: ./gradlew clean build
+
+            - name: Publish (GitHub)
+              uses: Kir-Antipov/mc-publish@v3.3.0
+              with:
+                  github-tag: "v${{ inputs.mod_version }}"
+                  github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+                  github-generate-changelog: true
+
+                  name: "Release v${{ inputs.mod_version }} for Minecraft ${{ inputs.minecraft_version }}"
+                  version: "${{ inputs.mod_version }}"
+                  version-type: release
+
+                  files: "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+
+                  java: "${{ inputs.java_version }}"
+
+            - name: Publish Fabric (CurseForge/Modrinth)
+              uses: Kir-Antipov/mc-publish@v3.3.0
+              with:
+                  curseforge-id: 378549
+                  curseforge-token: "${{ secrets.CURSEFORGE_TOKEN }}"
+
+                  modrinth-id: 5jVtTQGY
+                  modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
+
+                  github-generate-changelog: true
+
+                  name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+                  version: "${{ inputs.mod_version }}"
+                  version-type: release
+
+                  files: "fabric/build/libs/skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+
+                  java: "${{ inputs.java_version }}"
+
+            - name: Publish Forge (CurseForge/Modrinth)
+              uses: Kir-Antipov/mc-publish@v3.3.0
+              with:
+                  curseforge-id: 378549
+                  curseforge-token: "${{ secrets.CURSEFORGE_TOKEN }}"
+
+                  modrinth-id: 5jVtTQGY
+                  modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
+
+                  github-generate-changelog: true
+
+                  name: "skin_changer-forge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+                  version: "${{ inputs.mod_version }}"
+                  version-type: release
+
+                  files: "forge/build/libs/skin_changer-forge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+
+                  java: "${{ inputs.java_version }}"
