@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.4
+- Fix command registration
+
+## 0.6.3
+- Add Fabric and NeoForge support
+
 ## 0.6.2
 - Update to forge 1.20.2-48.1.0
 
