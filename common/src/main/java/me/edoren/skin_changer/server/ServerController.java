@@ -25,8 +25,6 @@ public class ServerController {
     }
 
     public void initialize(MinecraftServer server) {
-        SkinsCommand.register(server.getFunctions().getDispatcher());
-
         Path savesFolder = server.getWorldPath(LevelResource.ROOT);
         File skinChangerFolder = Paths.get(savesFolder.toString(), Constants.MOD_ID).normalize().toFile();
 
