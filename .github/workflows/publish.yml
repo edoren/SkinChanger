@@ -54,7 +54,9 @@ jobs:
                   version: "${{ inputs.mod_version }}"
                   version-type: release
 
-                  files: "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: |
+                    "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                    "build/libs/skin_changer-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
                   java: "${{ inputs.java_version }}"
 
@@ -77,6 +79,31 @@ jobs:
 
                   java: "${{ inputs.java_version }}"
 
+                  fail-mode: skip
+
+            - name: Publish Forge (CurseForge/Modrinth)
+              uses: Kir-Antipov/mc-publish@v3.3.0
+              with:
+                  curseforge-id: 378549
+                  curseforge-token: "${{ secrets.CURSEFORGE_TOKEN }}"
+
+                  modrinth-id: 5jVtTQGY
+                  modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
+
+                  github-generate-changelog: true
+
+                  name: "skin_changer-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+                  version: "${{ inputs.mod_version }}"
+                  version-type: release
+
+                  files: |
+                    "forge/build/libs/skin_changer-forge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                    "build/libs/skin_changer-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+
+                  java: "${{ inputs.java_version }}"
+
+                  fail-mode: skip
+
             - name: Publish Neoforge (CurseForge/Modrinth)
               uses: Kir-Antipov/mc-publish@v3.3.0
               with:
@@ -95,3 +122,5 @@ jobs:
                   files: "neoforge/build/libs/skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
                   java: "${{ inputs.java_version }}"
+
+                  fail-mode: skip
