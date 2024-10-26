@@ -80,7 +80,7 @@ jobs:
 
                   java: "${{ inputs.java_version }}"
 
-            - name: Publish Forge (CurseForge/Modrinth)
+            - name: Publish NeoForge (CurseForge/Modrinth)
               uses: Kir-Antipov/mc-publish@v3.3.0
               with:
                   curseforge-id: 378549
@@ -91,10 +91,10 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "skin_changer-forge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+                  name: "skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
                   version: "${{ inputs.mod_version }}"
                   version-type: release
 
-                  files: "forge/build/libs/skin_changer-forge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "neoforge/build/libs/skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
                   java: "${{ inputs.java_version }}"
