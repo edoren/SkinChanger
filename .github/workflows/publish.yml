@@ -13,8 +13,11 @@ on:
                 required: true
             java_version:
                 description: "Java Version"
-                type: number
-                default: 21
+                type: choice
+                options:
+                - "21"
+                - "17"
+                default: "21"
                 required: true
 
 permissions:
@@ -33,7 +36,7 @@ jobs:
               uses: actions/setup-java@v2
               with:
                   distribution: "temurin"
-                  java-version: 21
+                  java-version: ${{ inputs.java_version }}
 
             - name: Make Gradle Wrapper Executable
               if: ${{ runner.os != 'Windows' }}
@@ -50,12 +53,11 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "Release v${{ inputs.minecraft_version }} for ${{ inputs.mod_version }}"
+                  name: "Release v${{ inputs.mod_version }} for Minecraft ${{ inputs.minecraft_version }}"
                   version: "${{ inputs.mod_version }}"
                   version-type: release
 
-                  files: |
-                      "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
                   java: "${{ inputs.java_version }}"
 
@@ -70,16 +72,15 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "skin_changer-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+                  name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
                   version: "${{ inputs.mod_version }}"
                   version-type: release
 
-                  files: |
-                      "*/build/libs/skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "fabric/build/libs/skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
                   java: "${{ inputs.java_version }}"
 
-            - name: Publish Neoforge (CurseForge/Modrinth)
+            - name: Publish NeoForge (CurseForge/Modrinth)
               uses: Kir-Antipov/mc-publish@v3.3.0
               with:
                   curseforge-id: 378549
@@ -90,11 +91,10 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "skin_changer-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
+                  name: "skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
                   version: "${{ inputs.mod_version }}"
                   version-type: release
 
-                  files: |
-                      "*/build/libs/skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "neoforge/build/libs/skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
 
                   java: "${{ inputs.java_version }}"
