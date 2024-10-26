@@ -63,10 +63,13 @@ public class SkinProviderController {
         }
         this.cacheFile = cacheFile.getPath();
 
-        PlayerEvent.PLAYER_JOIN.clearListeners();
-        PlayerEvent.PLAYER_QUIT.clearListeners();
         PlayerEvent.PLAYER_JOIN.register(this::onPlayerLogin);
         PlayerEvent.PLAYER_QUIT.register(this::onPlayerLogout);
+    }
+
+    public void deinitialize() {
+        PlayerEvent.PLAYER_JOIN.unregister(this::onPlayerLogin);
+        PlayerEvent.PLAYER_QUIT.unregister(this::onPlayerLogout);
     }
 
     public void registerCapeProvider(ISkinProvider provider) {

@@ -33,4 +33,8 @@ public class ServerController {
         SkinProviderController.GetInstance().registerSkinProvider(new MineskinSkinProvider());
         SkinProviderController.GetInstance().registerCapeProvider(new CrafatarCapeProvider());
     }
+
+    public void deinitialize(MinecraftServer server) {
+        SkinProviderController.GetInstance().deinitialize();
+    }
 }
