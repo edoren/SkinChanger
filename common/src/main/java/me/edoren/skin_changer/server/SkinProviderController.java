@@ -63,10 +63,13 @@ public class SkinProviderController {
         }
         this.cacheFile = cacheFile.getPath();
 
-        PlayerEvent.PLAYER_JOIN.clearListeners();
-        PlayerEvent.PLAYER_QUIT.clearListeners();
         PlayerEvent.PLAYER_JOIN.register(this::onPlayerLogin);
         PlayerEvent.PLAYER_QUIT.register(this::onPlayerLogout);
+    }
+
+    public void deinitialize() {
+        PlayerEvent.PLAYER_JOIN.unregister(this::onPlayerLogin);
+        PlayerEvent.PLAYER_QUIT.unregister(this::onPlayerLogout);
     }
 
     public void registerCapeProvider(ISkinProvider provider) {
@@ -264,7 +267,7 @@ public class SkinProviderController {
         FileReader fr = new FileReader(cacheFile);
         PlayerModel[] playerModels = gson.fromJson(fr, PlayerModel[].class);
         fr.close();
-        return playerModels != null ? new ArrayList(Arrays.asList(playerModels)) : new ArrayList<>();
+        return playerModels != null ? new ArrayList<>(Arrays.asList(playerModels)) : new ArrayList<>();
     }
 
     private void writeCacheFile(List<PlayerModel> playersCache) throws IOException {

@@ -21,8 +21,10 @@ public final class SkinChanger {
         LifecycleEvent.SETUP.register(this::onSetup);
         if (Platform.getEnvironment() == Env.CLIENT) {
             ClientLifecycleEvent.CLIENT_SETUP.register(this::onClientSetup);
+            ClientLifecycleEvent.CLIENT_STOPPING.register(this::onClientStopping);
         }
         LifecycleEvent.SERVER_STARTED.register(this::onServerStarted);
+        LifecycleEvent.SERVER_STOPPED.register(this::onServerStopped);
         CommandRegistrationEvent.EVENT.register(this::onCommandRegistration);
     }
 
@@ -34,8 +36,16 @@ public final class SkinChanger {
         ClientController.GetInstance().initialize();
     }
 
+    void onClientStopping(Minecraft client) {
+        ClientController.GetInstance().deinitialize();
+    }
+
     void onServerStarted(MinecraftServer server) {
         ServerController.GetInstance().initialize(server);
+    }
+
+    void onServerStopped(MinecraftServer server) {
+        ServerController.GetInstance().deinitialize(server);
     }
 
     void onCommandRegistration(CommandDispatcher<CommandSourceStack> commandSourceStackCommandDispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
