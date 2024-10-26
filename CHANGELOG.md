@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.5
+- Lower Fabric loader version to 0.16.0
+
 ## 0.6.4
 - Fix command registration
 
