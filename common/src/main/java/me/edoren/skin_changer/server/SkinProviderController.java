@@ -142,7 +142,7 @@ public class SkinProviderController {
         if (cache)
             savePlayerDataToCache(dataType, model, data);
         sendPlayerDataToAll(model);
-        LogManager.getLogger().info("Loaded {} for player {}", dataType, model);
+        LogManager.getLogger().debug("Loaded {} for player {}", dataType, model);
         return true;
     }
 
@@ -205,7 +205,7 @@ public class SkinProviderController {
 
                 Path filePath = Paths.get(cacheFolders.get(dataType), fileUUID);
                 Files.write(filePath, bytes);
-                LogManager.getLogger().info("Caching file {}", filePath.toString());
+                LogManager.getLogger().debug("Caching file {}", filePath.toString());
             } catch (IOException e) {
                 LogManager.getLogger().warn("Exception while calling savePlayerDataToCache", e);
             }
@@ -221,7 +221,7 @@ public class SkinProviderController {
                     if (file.isFile()) {
                         byte[] data = Files.readAllBytes(file.toPath());
                         loadedData.get(dataType).put(playerModel, data);
-                        LogManager.getLogger().info("Loading local {} for player {}", dataType, playerModel);
+                        LogManager.getLogger().debug("Loading local {} for player {}", dataType, playerModel);
                         return true;
                     }
                     break;
@@ -246,7 +246,7 @@ public class SkinProviderController {
                         File fileToRemove = dataType.equals(DataType.SKIN) ? dataFileSkin : dataFileCape;
 
                         if (fileToRemove.isFile() && fileToRemove.delete()) {
-                            LogManager.getLogger().info("Removing {} for player {}", dataType, model);
+                            LogManager.getLogger().debug("Removing {} for player {}", dataType, model);
                         }
 
                         if (!dataFileSkin.isFile() && !dataFileSkin.isFile()) {
@@ -279,7 +279,7 @@ public class SkinProviderController {
 
     private void onPlayerLogin(ServerPlayer player) {
         GameProfile profile = player.getGameProfile();
-        LogManager.getLogger().info("Player {} just logged in with id {}", profile.getName(), profile.getId());
+        LogManager.getLogger().debug("Player {} just logged in with id {}", profile.getName(), profile.getId());
         SharedPool.get().execute(() -> {
             sendAllDataToTarget(player);
             PlayerModel model = new PlayerModel(profile);
@@ -301,7 +301,7 @@ public class SkinProviderController {
         GameProfile profile = player.getGameProfile();
         PlayerModel model = new PlayerModel(profile);
         if (loadedData.get(DataType.SKIN).containsKey(model) || loadedData.get(DataType.CAPE).containsKey(model)) {
-            LogManager.getLogger().info("Removing session data for player {}[{}]", profile.getName(), profile.getId());
+            LogManager.getLogger().debug("Removing session data for player {}[{}]", profile.getName(), profile.getId());
             loadedData.get(DataType.SKIN).remove(model);
             loadedData.get(DataType.CAPE).remove(model);
             sendPlayerDataToAll(model);
