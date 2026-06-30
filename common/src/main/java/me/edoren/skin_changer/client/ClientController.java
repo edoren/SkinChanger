@@ -32,8 +32,11 @@ public class ClientController {
     }
 
     public void initialize() {
-        ClientTickEvent.CLIENT_PRE.clearListeners();
         ClientTickEvent.CLIENT_PRE.register(this::onClientTickEvent);
+    }
+
+    public void deinitialize() {
+        ClientTickEvent.CLIENT_PRE.unregister(this::onClientTickEvent);
     }
 
     public ResourceLocation getLocationCape(PlayerModel model) {
