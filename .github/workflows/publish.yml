@@ -2,23 +2,6 @@ name: Publish on GitHub, CurseForge & Modrinth
 
 on:
     workflow_dispatch:
-        inputs:
-            mod_version:
-                description: "The version of the mod"
-                type: string
-                required: true
-            minecraft_version:
-                description: "Minecraft Version"
-                type: string
-                required: true
-            java_version:
-                description: "Java Version"
-                type: choice
-                options:
-                - "21"
-                - "17"
-                default: "21"
-                required: true
 
 permissions:
     contents: write
@@ -32,11 +15,17 @@ jobs:
               with:
                   submodules: true
 
+            - name: Extract versions from gradle.properties
+              run: |
+                  echo "MOD_VERSION=$(grep '^mod_version' gradle.properties | cut -d'=' -f2 | tr -d ' ')" >> $GITHUB_ENV
+                  echo "MINECRAFT_VERSION=$(grep '^minecraft_version ' gradle.properties | cut -d'=' -f2 | tr -d ' ')" >> $GITHUB_ENV
+                  echo "JAVA_VERSION=$(grep '^java_version' gradle.properties | cut -d'=' -f2 | tr -d ' ')" >> $GITHUB_ENV
+
             - name: Setup Java
               uses: actions/setup-java@v2
               with:
                   distribution: "temurin"
-                  java-version: ${{ inputs.java_version }}
+                  java-version: ${{ env.JAVA_VERSION }}
 
             - name: Make Gradle Wrapper Executable
               if: ${{ runner.os != 'Windows' }}
@@ -48,18 +37,18 @@ jobs:
             - name: Publish (GitHub)
               uses: Kir-Antipov/mc-publish@v3.3.0
               with:
-                  github-tag: "v${{ inputs.mod_version }}"
+                  github-tag: "v${{ env.MOD_VERSION }}"
                   github-token: "${{ secrets.GITHUB_TOKEN }}"
 
                   github-generate-changelog: true
 
-                  name: "Release v${{ inputs.mod_version }} for Minecraft ${{ inputs.minecraft_version }}"
-                  version: "${{ inputs.mod_version }}"
+                  name: "Release v${{ env.MOD_VERSION }} for Minecraft ${{ env.MINECRAFT_VERSION }}"
+                  version: "${{ env.MOD_VERSION }}"
                   version-type: release
 
-                  files: "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "*/build/libs/skin_changer-{fabric,forge,neoforge,quilt,rift}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar"
 
-                  java: "${{ inputs.java_version }}"
+                  java: "${{ env.JAVA_VERSION }}"
 
             - name: Publish Fabric (CurseForge/Modrinth)
               uses: Kir-Antipov/mc-publish@v3.3.0
@@ -72,13 +61,13 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
-                  version: "${{ inputs.mod_version }}"
+                  name: "skin_changer-fabric-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}"
+                  version: "${{ env.MOD_VERSION }}"
                   version-type: release
 
-                  files: "fabric/build/libs/skin_changer-fabric-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "fabric/build/libs/skin_changer-fabric-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar"
 
-                  java: "${{ inputs.java_version }}"
+                  java: "${{ env.JAVA_VERSION }}"
 
             - name: Publish NeoForge (CurseForge/Modrinth)
               uses: Kir-Antipov/mc-publish@v3.3.0
@@ -91,10 +80,10 @@ jobs:
 
                   github-generate-changelog: true
 
-                  name: "skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}"
-                  version: "${{ inputs.mod_version }}"
+                  name: "skin_changer-neoforge-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}"
+                  version: "${{ env.MOD_VERSION }}"
                   version-type: release
 
-                  files: "neoforge/build/libs/skin_changer-neoforge-${{ inputs.minecraft_version }}-${{ inputs.mod_version }}.jar"
+                  files: "neoforge/build/libs/skin_changer-neoforge-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar"
 
-                  java: "${{ inputs.java_version }}"
+                  java: "${{ env.JAVA_VERSION }}"
