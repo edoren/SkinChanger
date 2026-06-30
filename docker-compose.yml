@@ -1,0 +1,12 @@
+services:
+  build:
+    build: .
+    volumes:
+      # Mount source so edits on the host are reflected without rebuilding the image
+      - .:/workspace
+      # Persist Gradle caches across runs (avoids re-downloading Minecraft/deps every time)
+      - gradle-cache:/root/.gradle
+    command: ["./gradlew", "build"]
+
+volumes:
+  gradle-cache:

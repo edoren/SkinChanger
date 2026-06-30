@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:meta.fabricmc.net)",
+      "WebFetch(domain:api.modrinth.com)",
+      "WebFetch(domain:maven.neoforged.net)",
+      "WebFetch(domain:maven.architectury.dev)",
+      "WebFetch(domain:modrinth.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}
