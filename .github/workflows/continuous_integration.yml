@@ -6,15 +6,75 @@ on:
   pull_request:
     branches: [ "master" ]
 
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
 
     steps:
+    - name: Post or update pending comment
+      id: post-comment
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const marker = '<!-- skinchanger-ci-artifacts -->';
+          const statusStart = '<!-- sc-status-start -->';
+          const statusEnd = '<!-- sc-status-end -->';
+          const sha = context.payload.pull_request.head.sha.slice(0, 7);
+
+          const comments = await github.paginate(github.rest.issues.listComments, {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          const existing = comments.find(c => c.body && c.body.includes(marker));
+
+          const statusBlock = `${statusStart}\n⏳ **Build \`${sha}\` in progress…**\n${statusEnd}`;
+
+          let body;
+          let commentId;
+          if (existing) {
+            // Strip any previous status block, keep the last result
+            const escStart = statusStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const escEnd = statusEnd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const resultPart = existing.body
+              .replace(marker, '')
+              .replace(new RegExp(`\\n*${escStart}[\\s\\S]*?${escEnd}\\n*`), '')
+              .trim();
+            body = resultPart
+              ? `${marker}\n\n${statusBlock}\n\n${resultPart}`
+              : `${marker}\n\n${statusBlock}`;
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existing.id,
+              body,
+            });
+            commentId = existing.id;
+          } else {
+            body = `${marker}\n\n${statusBlock}`;
+            const { data: comment } = await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            commentId = comment.id;
+          }
+          core.setOutput('comment-id', String(commentId));
+
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
@@ -25,4 +85,56 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build with Gradle Wrapper
+      id: build
       run: ./gradlew build
+
+    - name: Upload Fabric artifact
+      id: upload-fabric
+      if: steps.build.outcome == 'success'
+      uses: actions/upload-artifact@v4
+      with:
+        name: fabric
+        path: fabric/build/libs/*.jar
+        if-no-files-found: error
+
+    - name: Upload NeoForge artifact
+      id: upload-neoforge
+      if: steps.build.outcome == 'success'
+      uses: actions/upload-artifact@v4
+      with:
+        name: neoforge
+        path: neoforge/build/libs/*.jar
+        if-no-files-found: error
+
+    - name: Update comment with results
+      if: always() && github.event_name == 'pull_request' && steps.post-comment.outputs.comment-id != ''
+      uses: actions/github-script@v7
+      env:
+        FABRIC_URL: ${{ steps.upload-fabric.outputs.artifact-url }}
+        NEOFORGE_URL: ${{ steps.upload-neoforge.outputs.artifact-url }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        COMMENT_ID: ${{ steps.post-comment.outputs.comment-id }}
+      with:
+        script: |
+          const marker = '<!-- skinchanger-ci-artifacts -->';
+          const fabricUrl = process.env.FABRIC_URL;
+          const neoforgeUrl = process.env.NEOFORGE_URL;
+          const runUrl = process.env.RUN_URL;
+          const sha = context.payload.pull_request.head.sha.slice(0, 7);
+
+          const body = (fabricUrl && neoforgeUrl)
+            ? [
+                marker,
+                `✅ **Build \`${sha}\` succeeded!** Download the artifacts below:`,
+                '',
+                `- [Fabric](${fabricUrl})`,
+                `- [NeoForge](${neoforgeUrl})`,
+              ].join('\n')
+            : `${marker}\n❌ **Build \`${sha}\` failed.** See the [workflow run](${runUrl}) for details.`;
+
+          await github.rest.issues.updateComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            comment_id: Number(process.env.COMMENT_ID),
+            body,
+          });
