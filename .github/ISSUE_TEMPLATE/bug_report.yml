@@ -17,6 +17,32 @@ body:
         - **Have you determined the minimum set of instructions to reproduce the issue?** If your problem only occurs
         with other mods installed, then you should narrow down exactly which mods are causing the issue. Please do not
         provide your entire list of mods to us and expect that we will be able to figure out the problem.
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      placeholder: "e.g. 1.21.1"
+    validations:
+      required: true
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod Version
+      description: >-
+        You can find the mod version in your mods folder or on the mod's Modrinth page.
+      placeholder: "e.g. 0.9.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Mod Loader
+      options:
+        - Fabric
+        - NeoForge
+        - Forge
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
@@ -28,6 +54,8 @@ body:
 
         **Hint:** If you have any screenshots, videos, or other information that you feel is necessary to
         explain the issue, you can attach them here.
+    validations:
+      required: true
   - type: textarea
     id: description-reproduction-steps
     attributes:
@@ -35,7 +63,7 @@ body:
       description: >-
         Provide as much information as possible on how to reproduce this bug. Make sure your instructions are as clear and
         concise as possible, because other people will need to be able to follow your guide in order to re-create the issue.
-        
+
         **Hint:**  A common way to fill this section out is to write a step-by-step guide.
     validations:
       required: true
@@ -58,7 +86,7 @@ body:
         **Important:** Even if your game is _not crashing_ as a result of your problem, we still need a crash report. This
         file contains important information about your hardware and software configuration. You can generate a crash report
         manually by loading the game to the main menu, and holding the F3+C keys together for approximately 10 seconds.
-        
+
         **Hint:** You can usually find crash reports (with their date and time) in the folder `.minecraft/crash-reports`.
       placeholder: >-
         Drag-and-drop the crash report file here.
