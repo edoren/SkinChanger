@@ -1,45 +1,18 @@
 title: ""
 labels: []
-body:
-  - type: markdown
-    attributes:
-      value: >-
-        Use this form to suggest a new feature, improvement, or Minecraft version support.
-        Make sure you have used the [search tool](https://github.com/edoren/SkinChanger/discussions)
-        to check whether a similar discussion already exists.
+body: |
+  ## Request Type
+  <!-- Check one that applies -->
+  - [ ] New Minecraft version support
+  - [ ] New feature
+  - [ ] Improvement to existing feature
 
-  - type: dropdown
-    id: type
-    attributes:
-      label: Request Type
-      options:
-        - New Minecraft version support
-        - New feature
-        - Improvement to existing feature
-    validations:
-      required: true
+  ## Minecraft Version (if applicable)
+  <!-- Fill in if you are requesting support for a new Minecraft version, e.g. 1.21.4 -->
 
-  - type: input
-    id: mc-version
-    attributes:
-      label: Minecraft Version (if applicable)
-      description: Fill in if you are requesting support for a new Minecraft version.
-      placeholder: "e.g. 1.21.4"
+  ## Description
+  <!-- Describe your idea or request in as much detail as possible. Explain what problem
+       you are trying to solve and what you would like to see changed or added. -->
 
-  - type: textarea
-    id: description
-    attributes:
-      label: Description
-      description: >-
-        Describe your idea or request in as much detail as possible. Explain what problem
-        you are trying to solve and what you would like to see changed or added.
-    validations:
-      required: true
-
-  - type: checkboxes
-    id: checklist
-    attributes:
-      label: Before submitting
-      options:
-        - label: I searched existing discussions and this has not been requested before
-          required: true
+  ## Checklist
+  - [ ] I searched existing discussions and this has not been requested before
