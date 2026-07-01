@@ -12,6 +12,11 @@ import java.nio.file.Path;
 
 public class SkinChangerConfig {
     public boolean showChatMessages = true;
+    public int maxSkinFileSizeKb = 512;
+
+    public long maxSkinFileSizeBytes() {
+        return maxSkinFileSizeKb * 1024L;
+    }
 
     private static SkinChangerConfig instance;
 

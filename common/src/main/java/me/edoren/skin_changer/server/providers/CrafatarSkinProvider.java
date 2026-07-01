@@ -1,6 +1,7 @@
 package me.edoren.skin_changer.server.providers;
 
 import me.edoren.skin_changer.common.NetworkUtils;
+import me.edoren.skin_changer.common.SkinChangerConfig;
 
 public class CrafatarSkinProvider implements ISkinProvider {
     private static final String[] MIRRORS = {
@@ -14,7 +15,7 @@ public class CrafatarSkinProvider implements ISkinProvider {
         String uuid = NetworkUtils.getPlayerUUID(playerName);
         if (uuid == null) return null;
         for (String mirror : MIRRORS) {
-            byte[] data = NetworkUtils.downloadFile(String.format(mirror, uuid), null, 1);
+            byte[] data = NetworkUtils.downloadFile(String.format(mirror, uuid), null, 1, SkinChangerConfig.get().maxSkinFileSizeBytes());
             if (data != null) return data;
         }
         return null;
