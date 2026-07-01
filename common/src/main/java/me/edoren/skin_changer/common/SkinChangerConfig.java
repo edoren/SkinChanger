@@ -26,7 +26,8 @@ public class SkinChangerConfig {
 
         if (Files.exists(file)) {
             try (Reader r = Files.newBufferedReader(file)) {
-                instance = gson.fromJson(r, SkinChangerConfig.class);
+                SkinChangerConfig parsed = gson.fromJson(r, SkinChangerConfig.class);
+                instance = parsed != null ? parsed : new SkinChangerConfig();
             } catch (IOException e) {
                 LogManager.getLogger().warn("Failed to read {}, using defaults", file, e);
                 instance = new SkinChangerConfig();
