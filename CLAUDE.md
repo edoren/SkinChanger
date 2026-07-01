@@ -49,6 +49,16 @@ All versions live in `gradle.properties`. When targeting a new Minecraft version
 5. Update `neoforge_api_version` and `neoforge_version_range` (NeoForge major/minor tracks MC, e.g. `[21.3,)` for MC `1.21.3`).
 6. Fetch `https://raw.githubusercontent.com/architectury/architectury-api/{lowest_game_version}/build.gradle` and copy the `dev.architectury.loom` version into `build.gradle`.
 
+### Known source changes by MC version
+
+When upgrading, code in `common/` may need fixes for MC API changes. The NeoForge migration primers are the primary reference — check the one matching the version you're upgrading to:
+
+```
+https://github.com/neoforged/.github/blob/main/primers/{mc_version}/index.md
+```
+
+For method-level renames not covered by the primer, extract the class from the Minecraft jar in the Loom cache and run `strings` on it to list all method names.
+
 ## Commits
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/).

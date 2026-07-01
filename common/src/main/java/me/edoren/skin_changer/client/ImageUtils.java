@@ -19,7 +19,7 @@ public class ImageUtils {
                 return PlayerSkin.Model.WIDE; // it's actually "legacy", but there will always be a filter to convert them into "default".
             if (w == h) {
                 int r = Math.max(w / 64, 1);
-                if (((image.getPixelRGBA(55 * r, 20 * r) & 0xFF000000) >>> 24) == 0)
+                if (((image.getPixel(55 * r, 20 * r) & 0xFF000000) >>> 24) == 0)
                     return PlayerSkin.Model.SLIM;
                 return PlayerSkin.Model.WIDE;
             }
@@ -77,18 +77,18 @@ public class ImageUtils {
     private static void setAreaOpaque(NativeImage image, int x, int y, int width, int height) {
         for (int i = x; i < width; i++)
             for (int j = y; j < height; j++)
-                image.setPixelRGBA(i, j, image.getPixelRGBA(i, j) | 0xFF000000);
+                image.setPixel(i, j, image.getPixel(i, j) | 0xFF000000);
     }
 
     private static void setAreaTransparent(NativeImage image, int x, int y, int width, int height) {
         for (int i = x; i < width; i++)
             for (int j = y; j < height; j++)
-                if ((image.getPixelRGBA(i, j) >> 24 & 0xFF) < 128)
+                if ((image.getPixel(i, j) >> 24 & 0xFF) < 128)
                     return;
 
         for (int l = x; l < width; l++)
             for (int i1 = y; i1 < height; i1++)
-                image.setPixelRGBA(l, i1, image.getPixelRGBA(l, i1) & 0xFFFFFF);
+                image.setPixel(l, i1, image.getPixel(l, i1) & 0xFFFFFF);
     }
 
     public static boolean isNotValidData(byte[] data) {
