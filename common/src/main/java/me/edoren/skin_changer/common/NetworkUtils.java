@@ -31,9 +31,13 @@ public class NetworkUtils {
     }
 
     public static byte[] downloadFile(String resource, Proxy proxy, int maxRetries) {
+        return downloadFile(resource, proxy, maxRetries, 0);
+    }
+
+    public static byte[] downloadFile(String resource, Proxy proxy, int maxRetries, long maxBytes) {
         try {
             URL url = new URL(resource);
-            return downloadFile(url, proxy, maxRetries);
+            return downloadFile(url, proxy, maxRetries, maxBytes);
         } catch (MalformedURLException e) {
             LogManager.getLogger().error("Exception while calling downloadFile", e);
             return null;
@@ -41,6 +45,10 @@ public class NetworkUtils {
     }
 
     public static byte[] downloadFile(URL url, Proxy proxy, int maxRetries) {
+        return downloadFile(url, proxy, maxRetries, 0);
+    }
+
+    public static byte[] downloadFile(URL url, Proxy proxy, int maxRetries, long maxBytes) {
         LogManager.getLogger().debug("Downloading file {}", url);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (int i = 0; i < maxRetries; i++) {
@@ -52,12 +60,24 @@ public class NetworkUtils {
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
+                if (maxBytes > 0) {
+                    long contentLength = urlConnection.getContentLengthLong();
+                    if (contentLength > maxBytes) {
+                        LogManager.getLogger().warn("Skipping {} — Content-Length {} exceeds limit of {} bytes", url, contentLength, maxBytes);
+                        return null;
+                    }
+                }
+
                 BufferedInputStream in = new BufferedInputStream(urlConnection.getInputStream());
 
                 byte[] dataBuffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                     stream.write(dataBuffer, 0, bytesRead);
+                    if (maxBytes > 0 && stream.size() > maxBytes) {
+                        LogManager.getLogger().warn("Skipping {} — size exceeds limit of {} bytes", url, maxBytes);
+                        return null;
+                    }
                 }
 
                 LogManager.getLogger().info("File {} downloaded", url);

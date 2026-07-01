@@ -8,6 +8,7 @@ import dev.architectury.utils.GameInstance;
 import me.edoren.skin_changer.common.NetworkContext;
 import me.edoren.skin_changer.common.NetworkUtils;
 import me.edoren.skin_changer.common.SharedPool;
+import me.edoren.skin_changer.common.SkinChangerConfig;
 import me.edoren.skin_changer.common.messages.PlayerSkinUpdateMessage;
 import me.edoren.skin_changer.common.models.PlayerModel;
 import me.edoren.skin_changer.common.models.PlayerSkinModel;
@@ -116,7 +117,7 @@ public class SkinProviderController {
     }
 
     private boolean setPlayerDataByURL(PlayerModel model, URL url, boolean cache, DataType dataType) {
-        byte[] data = NetworkUtils.downloadFile(url.toString(), null, 2);
+        byte[] data = NetworkUtils.downloadFile(url, null, 2, SkinChangerConfig.get().maxSkinFileSizeBytes());
         return storePlayerData(model, data, cache, dataType);
     }
 

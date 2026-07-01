@@ -1,12 +1,13 @@
 package me.edoren.skin_changer.server.providers;
 
 import me.edoren.skin_changer.common.NetworkUtils;
+import me.edoren.skin_changer.common.SkinChangerConfig;
 
 public class MineskinSkinProvider implements ISkinProvider {
     @Override
     public byte[] getSkin(String playerName) {
         String uuid = NetworkUtils.getPlayerUUID(playerName);
         if (uuid == null) return null;
-        return NetworkUtils.downloadFile(String.format("https://mineskin.eu/skin/%s", uuid), null, 2);
+        return NetworkUtils.downloadFile(String.format("https://mineskin.eu/skin/%s", uuid), null, 2, SkinChangerConfig.get().maxSkinFileSizeBytes());
     }
 }
