@@ -34,10 +34,10 @@ public class SkinLoaderService {
             return;
         }
 
-        LogManager.getLogger().info("Loading skin for player {}", model);
+        LogManager.getLogger().debug("Loading skin for player {}", model);
 
         if (ImageUtils.isNotValidData(data)) {
-            LogManager.getLogger().info("Error loading skin for player {}", model);
+            LogManager.getLogger().warn("Error loading skin for player {}", model);
             return;
         }
 
@@ -59,10 +59,10 @@ public class SkinLoaderService {
             return;
         }
 
-        LogManager.getLogger().info("Loading cape for player {}", model);
+        LogManager.getLogger().debug("Loading cape for player {}", model);
 
         if (ImageUtils.isNotValidData(data)) {
-            LogManager.getLogger().info("Error loading cape for player {}", model);
+            LogManager.getLogger().warn("Error loading cape for player {}", model);
             return;
         }
 
@@ -74,7 +74,7 @@ public class SkinLoaderService {
     public void requestPlayerSkin(PlayerModel model) {
         if (loadedSkins.containsKey(model) || playerSkinRequests.containsKey(model)) return;
 
-        LogManager.getLogger().info("Requesting skin for player {}", model);
+        LogManager.getLogger().debug("Requesting skin for player {}", model);
 
         Object signal = new Object();
         playerSkinRequests.put(model, signal);
@@ -85,7 +85,7 @@ public class SkinLoaderService {
                 try {
                     signal.wait(5000);
                 } catch (InterruptedException e) {
-                    LogManager.getLogger().info("Error requesting skin for player {}", model);
+                    LogManager.getLogger().warn("Error requesting skin for player {}", model);
                 }
                 playerSkinRequests.remove(model);
             }

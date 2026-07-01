@@ -49,7 +49,7 @@ public class ServerMessageHandler {
     static void processMessage(PlayerSkinRequestMessage message, ServerPlayer sendingPlayer) {
         SharedPool.execute(() -> {
             GameProfile profile = message.getPlayer().toGameProfile();
-            LogManager.getLogger().info("Requested skin for player {}[{}]", profile.getName(), profile.getId());
+            LogManager.getLogger().debug("Requested skin for player {}[{}]", profile.getName(), profile.getId());
             if (!SkinProviderController.GetInstance().getPlayerSkin(profile, sendingPlayer)) {
                 SkinProviderController.GetInstance().setPlayerSkinByName(profile, message.getPlayer().getName(), false);
             }

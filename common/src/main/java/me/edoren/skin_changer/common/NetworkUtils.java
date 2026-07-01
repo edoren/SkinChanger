@@ -60,14 +60,14 @@ public class NetworkUtils {
                     stream.write(dataBuffer, 0, bytesRead);
                 }
 
-                LogManager.getLogger().info("File {} downloaded", url);
+                LogManager.getLogger().debug("File {} downloaded", url);
                 return stream.toByteArray();
             } catch (FileNotFoundException ignored) {
                 return null;
             } catch (IOException ignored) {
             }
         }
-        LogManager.getLogger().info("Error downloading file {}", url);
+        LogManager.getLogger().warn("Error downloading file {}", url);
         return null;
     }
 
